@@ -18,6 +18,7 @@
     "@expo/vector-icons": "^14.0.2",
     "@gluestack-ui/button": "^1.0.13",
     "@gluestack-ui/icon": "^0.1.25",
+    "@gluestack-ui/input": "^0.1.37",
     "@gluestack-ui/nativewind-utils": "^1.0.26",
     "@gluestack-ui/overlay": "^0.1.21",
     "@gluestack-ui/toast": "^1.0.9",
@@ -49,7 +50,8 @@
     "react-native-svg": "^15.2.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "expo-linear-gradient": "~14.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
