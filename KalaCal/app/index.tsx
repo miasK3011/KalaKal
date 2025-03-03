@@ -59,7 +59,7 @@ export default function WelcomeScreen() {
           className="w-full absolute bottom-5"
           size="lg"
           onPress={() => {
-            router.push("/home/(tabs)/home");
+            router.push("/auth/login");
           }}
         >
           <ButtonText className="text-orange-500">Continuar</ButtonText>
