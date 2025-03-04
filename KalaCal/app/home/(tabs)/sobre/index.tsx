@@ -1,6 +1,6 @@
 import { Button, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
-export default function DetailsScreen() {
+export default function Sobre() {
   return (
     <View style={styles.container}>
         <Text style={{fontSize: 30, fontWeight: "bold"}}>Desenvolvido por Mias</Text>

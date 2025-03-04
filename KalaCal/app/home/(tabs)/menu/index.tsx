@@ -5,7 +5,7 @@ import MenuCardItem from "@/components/menu-card-item";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
-export default function Home() {
+export default function Menu() {
   return (
     <View style={{ backgroundColor: "#fafafa", flex: 1 }}>
       <HeaderHome />
