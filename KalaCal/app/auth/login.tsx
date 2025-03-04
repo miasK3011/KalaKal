@@ -44,7 +44,7 @@ export default function LoginPage() {
           className="w-full absolute bottom-5"
           size="lg"
           onPress={() => {
-            router.push("/auth/login");
+            router.push("/home/(tabs)/home");
           }}
         >
           <ButtonText className="text-orange-500">Entrar</ButtonText>
