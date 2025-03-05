@@ -1,55 +1,105 @@
-import { Button, ButtonText } from "@/components/ui/button";
-import { Input, InputField } from "@/components/ui/input";
-import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import { Image, View } from "react-native";
+import React, { useState } from "react";
+import {
+  Alert,
+  Image,
+  ImageBackground,
+  Keyboard,
+  KeyboardAvoidingView,
+  StatusBar,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { useRouter, Link } from "expo-router";
+import Loading from "@/components/ui/loading/loader";
+import estilo from "@/components/login/styles";
 
-export default function LoginPage() {
+export default function EntrarScreen() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const SignIn = (email: string, password: string) => {
+    setLoading(true);
+    
+    setTimeout(() => {
+      setLoading(false);
+      router.replace("/home/(tabs)/menu");
+    }, 1500);
+  };
+
   return (
-    <LinearGradient colors={["#FFA500", "#FF4500"]} style={{ flex: 1 }}>
-      <View className="flex items-center  h-full p-4">
-        <View className="w-full flex items-center justify-center mt-11">
-          <Image
-            source={require("../../assets/images/logo_vertical.png")}
-            style={{
-              width: 300,
-              height: 300,
-              resizeMode: "contain",
-              marginBottom: 10,
-            }}
-          />
-        </View>
-        <View className="w-full flex items-center justify-center mt-11 gap-3">
-          <Input
-            variant="underlined"
-            size="xl"
-            isDisabled={false}
-            isInvalid={false}
-            isReadOnly={false}
-          >
-            <InputField placeholderTextColor={"white"} placeholder="Email" />
-          </Input>
-          <Input
-            variant="underlined"
-            size="xl"
-            isDisabled={false}
-            isInvalid={false}
-            isReadOnly={false}
-          >
-            <InputField type="password" placeholder="Senha" />
-          </Input>
-        </View>
-        <Button
-          action="secondary"
-          className="w-full absolute bottom-5"
-          size="lg"
-          onPress={() => {
-            router.push("/home/(tabs)/menu");
-          }}
+    <TouchableWithoutFeedback
+      onPress={Keyboard.dismiss}
+      accessible={false}
+    >
+      <View style={{ flex: 1 }}>
+        <Loading loading={loading} />
+        <StatusBar barStyle="light-content" />
+        <ImageBackground
+          source={require("@/assets/images/background.png")}
+          style={estilo.image}
         >
-          <ButtonText className="text-orange-500">Entrar</ButtonText>
-        </Button>
+          <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 10,
+              }}
+            >
+              <Image
+                source={require("@/assets/images/logo_vertical.png")}
+                style={estilo.logo}
+              />
+              <View style={estilo.inputContainer}>
+                <TextInput
+                  style={estilo.textInput}
+                  placeholder={"E-mail"}
+                  onChangeText={setEmail}
+                  placeholderTextColor="rgba(255,255,255,0.5)"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  returnKeyType="next"
+                  keyboardType="email-address"
+                  value={email}
+                />
+                <TextInput
+                  style={estilo.textInput}
+                  placeholder={"Senha"}
+                  placeholderTextColor="rgba(255,255,255,0.5)"
+                  secureTextEntry={true}
+                  onChangeText={setSenha}
+                  returnKeyType="done"
+                  onSubmitEditing={() => SignIn(email, senha)}
+                  value={senha}
+                />
+              </View>
+              <View style={estilo.buttonsContainer}>
+                <TouchableOpacity 
+                  onPress={() => SignIn(email, senha)}
+                >
+                  <Image
+                    source={require("@/assets/images/login.png")}
+                    style={estilo.buttons}
+                  />
+                </TouchableOpacity>
+                <Link href="/" asChild>
+                  <TouchableOpacity>
+                    <Image
+                      source={require("@/assets/images/cadastro.png")}
+                      style={estilo.buttons}
+                    />
+                  </TouchableOpacity>
+                </Link>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        </ImageBackground>
       </View>
-    </LinearGradient>
+    </TouchableWithoutFeedback>
   );
 }
