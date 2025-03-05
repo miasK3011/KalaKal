@@ -1,18 +1,28 @@
-const menu = [
+import { Href } from "expo-router";
+import { ImageSourcePropType } from "react-native";
+
+interface Menu {
+  image: ImageSourcePropType;
+  icone: string;
+  titulo: string;
+  cor: string;
+  screen: Href;
+}
+const menu: Menu[][] = [
   [
     {
       image: require("@/assets/images/calazar-icon.png"),
       icone: "book-open-page-variant",
       titulo: "Leishmaniose Visceral",
       cor: "peru",
-      screen: "Leishmaniose",
+      screen: "/leishmaniose",
     },
     {
       image: require("@/assets/images/linha-cuidado-icon.png"),
       icone: "file-tree",
       titulo: "Linha de Cuidado ao Paciente",
       cor: "cornflowerblue",
-      screen: "",
+      screen: "/leishmaniose",
     },
   ],
   [
@@ -21,14 +31,14 @@ const menu = [
       icone: "map-marker-multiple",
       titulo: "Ocorrência dos Casos",
       cor: "lightcoral",
-      screen: "Georreferenciamento",
+      screen: "/leishmaniose",
     },
     {
       image: require("@/assets/images/pontos-cuidado-icon.png"),
       icone: "hospital",
       titulo: "Pontos de Cuidado no Piauí",
       cor: "khaki",
-      screen: "PontosCuidado",
+      screen: "/leishmaniose",
     },
   ],
   [
@@ -37,14 +47,14 @@ const menu = [
       icone: "chart-donut",
       titulo: "Plano de Enfrentamento e Controle de Doenças Negligenciadas",
       cor: "lightsalmon",
-      screen: "PlanoEnfrentamento",
+      screen: "/leishmaniose",
     },
     {
       image: require("@/assets/images/referencia-icon.png"),
       icone: "information-outline",
       titulo: "Referência e contrareferência",
       cor: "seagreen",
-      screen: "ReferenciaContraReferencia",
+      screen: "/leishmaniose",
     },
   ],
 ];
