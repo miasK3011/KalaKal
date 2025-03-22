@@ -47,7 +47,7 @@ const menu: Menu[][] = [
       icone: "chart-donut",
       titulo: "Plano de Enfrentamento e Controle de Doenças Negligenciadas",
       cor: "lightsalmon",
-      screen: "/leishmaniose",
+      screen: "/planoEnfrentamento",
     },
     {
       image: require("@/assets/images/referencia-icon.png"),
