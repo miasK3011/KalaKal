@@ -3,7 +3,6 @@ export const colors = {
   secondaryColor: "#ff9933",
   defaultTextColor: "#363636",
   defaultBackgroundColor: "#FAFAFA",
-  // TabNavigator disabled tab color
   disabledColor: "#808080",
 };
 
