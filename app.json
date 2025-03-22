@@ -2,6 +2,7 @@
   "expo": {
     "name": "KalaCal",
     "slug": "KalaCal",
+    "owner": "miaskaleb30",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/myIcon.png",
