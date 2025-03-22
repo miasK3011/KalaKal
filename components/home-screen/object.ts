@@ -38,7 +38,7 @@ const menu: Menu[][] = [
       icone: "hospital",
       titulo: "Pontos de Cuidado no Piauí",
       cor: "khaki",
-      screen: "/leishmaniose",
+      screen: "/pontosCuidado",
     },
   ],
   [
