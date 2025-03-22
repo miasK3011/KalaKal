@@ -8,5 +8,4 @@ export const colors = {
 
 export const sizes = {
   defaultTextSize: 18,
-  
 };
