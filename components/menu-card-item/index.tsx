@@ -1,5 +1,6 @@
+import { Text } from "@/components/ui/text";
 import React, { Component } from "react";
-import { View, Image, ImageSourcePropType } from "react-native";
+import { Image, ImageSourcePropType, View } from "react-native";
 import estilo from "./styles";
 
 interface MenuCardItemProps {

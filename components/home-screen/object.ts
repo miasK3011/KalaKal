@@ -50,12 +50,19 @@ const menu: Menu[][] = [
       screen: "/leishmaniose",
     },
     {
+      image: require("@/assets/images/KalaCal.png"),
+      icone: "information-outline",
+      titulo: "Referência e contrareferência",
+      cor: "seagreen",
+      screen: "/kalacal",
+    }
+    /* {
       image: require("@/assets/images/referencia-icon.png"),
       icone: "information-outline",
       titulo: "Referência e contrareferência",
       cor: "seagreen",
       screen: "/leishmaniose",
-    },
+    }, */
   ],
 ];
 
