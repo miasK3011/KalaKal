@@ -29,7 +29,7 @@ export default {
       [
         "react-native-maps",
         {
-          androidGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || "",
+          androidGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
         },
       ],
       [
