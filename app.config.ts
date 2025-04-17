@@ -1,5 +1,3 @@
-import env from "./config/env.ts";
-
 export default {
   expo: {
     name: "KalaCal",
@@ -31,7 +29,7 @@ export default {
       [
         "react-native-maps",
         {
-          androidGoogleMapsApiKey: env.GOOGLE_MAPS_API_KEY || "",
+          androidGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || "",
         },
       ],
       [
