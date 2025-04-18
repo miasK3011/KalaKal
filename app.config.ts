@@ -3,7 +3,7 @@ export default {
     name: "KalaCal",
     slug: "KalaCal",
     owner: "miaskaleb30",
-    version: "1.0.0",
+    version: "0.0.3-alpha",
     orientation: "portrait",
     icon: "./assets/myIcon.png",
     scheme: "myapp",
