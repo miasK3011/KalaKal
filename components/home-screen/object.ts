@@ -38,7 +38,7 @@ const menu: Menu[][] = [
       icone: "hospital",
       titulo: "Pontos de Cuidado no Piauí",
       cor: "khaki",
-      screen: "/leishmaniose",
+      screen: "/pontosCuidado",
     },
   ],
   [
@@ -50,12 +50,19 @@ const menu: Menu[][] = [
       screen: "/planoEnfrentamento",
     },
     {
+      image: require("@/assets/images/KalaCal.png"),
+      icone: "information-outline",
+      titulo: "Referência e contrareferência",
+      cor: "seagreen",
+      screen: "/kalacal",
+    }
+    /* {
       image: require("@/assets/images/referencia-icon.png"),
       icone: "information-outline",
       titulo: "Referência e contrareferência",
       cor: "seagreen",
       screen: "/leishmaniose",
-    },
+    }, */
   ],
 ];
 
