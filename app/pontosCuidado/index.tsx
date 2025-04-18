@@ -4,6 +4,7 @@ import { Linking, TouchableOpacity, View } from "react-native";
 import MapView, { Callout, Marker, Polygon } from "react-native-maps";
 import { colors } from "../../commons";
 import style from "../../components/care-spots/styles";
+import { Text } from "react-native";
 
 import pontos from "../../components/care-spots/object";
 import polygons from "../../components/care-spots/poligonos";
@@ -78,7 +79,6 @@ export default function PontosCuidadoScreen() {
         ref={mapRef}
         style={{ flex: 1 }}
         showsUserLocation
-        showsPointsOfInterest
         onMapReady={onMapLayout}
         initialRegion={{
           latitude: -5.0881867,
@@ -97,13 +97,13 @@ export default function PontosCuidadoScreen() {
               onCalloutPress={() => Linking.openURL(marker.address)}
               pinColor="red"
             >
-              {/* <Callout
+              <Callout
                 style={{
-                  height: 200,
+                  minHeight: 150,
+                  maxHeight: 350,
                   width: 200,
                   padding: 10,
                   backgroundColor: "white",
-                  borderRadius: 6,
                 }}
               >
                 <Text style={style.markerTitle}>{marker.nome}</Text>
@@ -118,7 +118,7 @@ export default function PontosCuidadoScreen() {
                 <View style={style.markerButtonContainer}>
                   <Text style={style.markerButton}>Traçar rota</Text>
                 </View>
-              </Callout> */}
+              </Callout>
             </Marker>
           ))}
         {(polygons as PolygonData).features.map((polygon) => (
