@@ -99,11 +99,11 @@ export default function PontosCuidadoScreen() {
             >
               <Callout
                 style={{
-                  height: 200,
+                  minHeight: 150,
+                  maxHeight: 350,
                   width: 200,
                   padding: 10,
                   backgroundColor: "white",
-                  borderRadius: 6,
                 }}
               >
                 <Text style={style.markerTitle}>{marker.nome}</Text>
