@@ -13,7 +13,7 @@ export default function PlanoEnfrentamento() {
 
   const handleAbrirArquivo = () => {
     Linking.openURL(
-      "http://www.saude.pi.gov.br/uploads/warning_document/file/179/Plano_Estadual_das_Negligenciadas_Piau__2015_2018_para_LIVRETO.pdf"
+      "https://docs.bvsalud.org/biblioref/2020/09/1118911/plano_estadual_das_negligenciadas_piau__2015_2018_para_livreto.pdf"
     );
   };
 
