@@ -3,32 +3,32 @@ import { vars } from 'nativewind';
 
 export const config = {
   light: vars({
-    '--color-primary-0': '179 179 179',
-    '--color-primary-50': '153 153 153',
-    '--color-primary-100': '128 128 128',
-    '--color-primary-200': '115 115 115',
-    '--color-primary-300': '102 102 102',
-    '--color-primary-400': '82 82 82',
-    '--color-primary-500': '51 51 51',
-    '--color-primary-600': '41 41 41',
-    '--color-primary-700': '31 31 31',
-    '--color-primary-800': '13 13 13',
-    '--color-primary-900': '10 10 10',
-    '--color-primary-950': '8 8 8',
+    '--color-primary-0': '255 234 224',   // tom mais claro
+    '--color-primary-50': '255 217 204',  // #FFD9CC
+    '--color-primary-100': '255 191 170', // #FFBFAA
+    '--color-primary-200': '255 153 119', // #FF9977
+    '--color-primary-300': '255 119 68',  // #FF7744
+    '--color-primary-400': '255 91 43',   // #FF5B2B
+    '--color-primary-500': '255 102 51',  // #FF6633 ✅ BASE
+    '--color-primary-600': '230 80 34',   // #E65022
+    '--color-primary-700': '204 61 17',   // #CC3D11
+    '--color-primary-800': '153 46 15',   // #992E0F
+    '--color-primary-900': '102 30 10',   // #661E0A
+    '--color-primary-950': '77 20 6',     // #4D1406 
 
     /* Secondary  */
-    '--color-secondary-0': '253 253 253',
-    '--color-secondary-50': '251 251 251',
-    '--color-secondary-100': '246 246 246',
-    '--color-secondary-200': '242 242 242',
-    '--color-secondary-300': '237 237 237',
-    '--color-secondary-400': '230 230 231',
-    '--color-secondary-500': '217 217 219',
-    '--color-secondary-600': '198 199 199',
-    '--color-secondary-700': '189 189 189',
-    '--color-secondary-800': '177 177 177',
-    '--color-secondary-900': '165 164 164',
-    '--color-secondary-950': '157 157 157',
+    '--color-secondary-0': '77 20 0',     // #4D1400
+    '--color-secondary-50': '102 28 0',   // #661C00
+    '--color-secondary-100': '130 35 0',  // #822300
+    '--color-secondary-200': '204 38 0',  // #CC2600
+    '--color-secondary-300': '228 55 0',  // #E43700
+    '--color-secondary-400': '255 70 7',  // #FF4607
+    '--color-secondary-500': '255 237 227', // #FFEDE3 (base invertida)
+    '--color-secondary-600': '255 218 204', // #FFDACC
+    '--color-secondary-700': '255 180 154', // #FFB49A
+    '--color-secondary-800': '255 136 100', // #FF8864
+    '--color-secondary-900': '255 104 54',  // #FF6836
+    '--color-secondary-950': '255 82 24',   // #FF5218
 
     /* Tertiary */
     '--color-tertiary-0': '255 250 245',
@@ -129,18 +129,18 @@ export const config = {
     '--color-outline-950': '26 23 23',
 
     /* Background */
-    '--color-background-0': '255 255 255',
-    '--color-background-50': '246 246 246',
-    '--color-background-100': '242 241 241',
-    '--color-background-200': '220 219 219',
-    '--color-background-300': '213 212 212',
-    '--color-background-400': '162 163 163',
-    '--color-background-500': '142 142 142',
-    '--color-background-600': '116 116 116',
-    '--color-background-700': '83 82 82',
-    '--color-background-800': '65 64 64',
-    '--color-background-900': '39 38 37',
-    '--color-background-950': '18 18 18',
+    '--color-background-0': '253 254 255',   // #FDFEFF ✅ BASE
+    '--color-background-50': '245 247 250',  // #F5F7FA
+    '--color-background-100': '235 238 243', // #EBEEF3
+    '--color-background-200': '220 224 230', // #DCE0E6
+    '--color-background-300': '200 204 212', // #C8CCD4
+    '--color-background-400': '170 174 182', // #AAAEB6
+    '--color-background-500': '140 145 153', // #8C9199
+    '--color-background-600': '110 115 125', // #6E737D
+    '--color-background-700': '80 85 95',    // #50555F
+    '--color-background-800': '50 55 65',    // #323741
+    '--color-background-900': '30 33 40',    // #1E2128
+    '--color-background-950': '15 17 22',    // #0F1116
 
     /* Background Special */
     '--color-background-error': '254 241 241',
