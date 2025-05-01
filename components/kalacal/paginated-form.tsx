@@ -1,5 +1,31 @@
 import React from "react";
 import { ScrollView, View } from "react-native";
+import {
+  Checkbox,
+  CheckboxGroup,
+  CheckboxIcon,
+  CheckboxIndicator,
+  CheckboxLabel,
+} from "../ui/checkbox";
+import { FormControl, FormControlLabel } from "../ui/form-control";
+import { Input, InputField } from "../ui/input";
+import {
+  Radio,
+  RadioGroup,
+  RadioIcon,
+  RadioIndicator,
+  RadioLabel,
+} from "../ui/radio";
+import {
+  Select,
+  SelectContent,
+  SelectInput,
+  SelectItem,
+  SelectPortal,
+  SelectTrigger,
+} from "../ui/select";
+import { Text } from "../ui/text";
+import { VStack } from "../ui/vstack";
 
 interface FormData {
   // Step 1: Age Range
@@ -49,9 +75,9 @@ export default function PaginatedForm({
     <ScrollView className="w-full mt-6">
       <VStack space="md" className="w-full">
         <FormControl isRequired>
-          <FormControl.Label>
+          <FormControlLabel>
             <Text className="font-medium text-gray-700">Idade</Text>
-          </FormControl.Label>
+          </FormControlLabel>
           <Input>
             <InputField
               placeholder="Digite a idade do paciente"
@@ -63,9 +89,9 @@ export default function PaginatedForm({
         </FormControl>
 
         <FormControl isRequired>
-          <FormControl.Label>
+          <FormControlLabel>
             <Text className="font-medium text-gray-700">Sexo</Text>
-          </FormControl.Label>
+          </FormControlLabel>
           <RadioGroup
             value={formData.gender}
             onChange={(value) => handleInputChange("gender", value)}
@@ -86,9 +112,9 @@ export default function PaginatedForm({
         </FormControl>
 
         <FormControl isRequired>
-          <FormControl.Label>
+          <FormControlLabel>
             <Text className="font-medium text-gray-700">Peso (kg)</Text>
-          </FormControl.Label>
+          </FormControlLabel>
           <Input>
             <InputField
               placeholder="Digite o peso em kg"
@@ -100,9 +126,9 @@ export default function PaginatedForm({
         </FormControl>
 
         <FormControl isRequired>
-          <FormControl.Label>
+          <FormControlLabel>
             <Text className="font-medium text-gray-700">Altura (cm)</Text>
-          </FormControl.Label>
+          </FormControlLabel>
           <Input>
             <InputField
               placeholder="Digite a altura em cm"
@@ -121,12 +147,12 @@ export default function PaginatedForm({
     <ScrollView className="w-full mt-6">
       <VStack space="md" className="w-full">
         <FormControl>
-          <FormControl.Label>
+          <FormControlLabel>
             <Text className="font-medium text-gray-700">
               Sintomas Presentes
             </Text>
-          </FormControl.Label>
-          <CheckboxGroup>
+          </FormControlLabel>
+          <CheckboxGroup value={[]}>
             <VStack space="sm">
               <Checkbox
                 value="fever"
@@ -184,11 +210,11 @@ export default function PaginatedForm({
         </FormControl>
 
         <FormControl isRequired>
-          <FormControl.Label>
+          <FormControlLabel>
             <Text className="font-medium text-gray-700">
               Nível de Severidade
             </Text>
-          </FormControl.Label>
+          </FormControlLabel>
           <Select
             selectedValue={formData.severityLevel}
             onValueChange={(value) => handleInputChange("severityLevel", value)}
@@ -208,11 +234,11 @@ export default function PaginatedForm({
         </FormControl>
 
         <FormControl isRequired>
-          <FormControl.Label>
+          <FormControlLabel>
             <Text className="font-medium text-gray-700">
               Duração dos Sintomas (dias)
             </Text>
-          </FormControl.Label>
+          </FormControlLabel>
           <Input>
             <InputField
               placeholder="Digite a duração em dias"
