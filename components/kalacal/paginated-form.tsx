@@ -1,4 +1,5 @@
-import React from "react";
+import { FormValues } from "@/app/kalacal";
+import React, { useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import {
   Checkbox,
@@ -7,8 +8,14 @@ import {
   CheckboxIndicator,
   CheckboxLabel,
 } from "../ui/checkbox";
-import { FormControl, FormControlLabel } from "../ui/form-control";
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+} from "../ui/form-control";
+import { Icon } from "../ui/icon";
 import { Input, InputField } from "../ui/input";
+import { Pressable } from "../ui/pressable";
 import {
   Radio,
   RadioGroup,
@@ -27,294 +34,325 @@ import {
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
-interface FormData {
-  // Step 1: Age Range
-  age: string;
-  gender: string;
-  weight: string;
-  height: string;
-
-  // Step 2: Symptoms
-  fever: boolean;
-  weakness: boolean;
-  bleeding: boolean;
-  jaundice: boolean;
-  severityLevel: string;
-  durationDays: string;
-
-  // Step 3: Results
-  reviewData: boolean;
-}
-
 export default function PaginatedForm({
   currentStep,
   formData,
   setFormData,
 }: {
   currentStep: number;
-  formData: FormData;
-  setFormData: (data: FormData) => void;
+  formData: FormValues;
+  setFormData: React.Dispatch<React.SetStateAction<FormValues>>;
 }) {
-  // Handler for input changes
+  const [selectedModel, setSelectedModel] = useState<"clinical" | "lab">(
+    "clinical"
+  );
+  const age_range_options = [
+    { label: "< 12 months old", value: "0-1" },
+    { label: "12 - 23 months", value: "2-4" },
+    { label: "2 - 15 years", value: "2-15" },
+    { label: "16-39 years", value: "19-39" },
+    { label: "> 40 years", value: "40" },
+  ];
+
   const handleInputChange = (field: keyof FormData, value: any) => {
-    setFormData({
-      ...formData,
+    setFormData((prevData) => ({
+      ...prevData,
       [field]: value,
-    });
+    }));
   };
 
   const handleCheckboxChange = (field: keyof FormData, value: boolean) => {
-    setFormData({
-      ...formData,
+    setFormData((prevData) => ({
+      ...prevData,
       [field]: value,
-    });
+    }));
   };
 
-  // Step 1: Age Range Form
-  const AgeRangeForm = () => (
-    <ScrollView className="w-full mt-6">
-      <VStack space="md" className="w-full">
-        <FormControl isRequired>
-          <FormControlLabel>
-            <Text className="font-medium text-gray-700">Idade</Text>
-          </FormControlLabel>
-          <Input>
-            <InputField
-              placeholder="Digite a idade do paciente"
-              keyboardType="numeric"
-              value={formData.age}
-              onChangeText={(value) => handleInputChange("age", value)}
-            />
-          </Input>
-        </FormControl>
+  const AgeRangeForm = useMemo(
+    () => (
+      <ScrollView className="w-full mt-6">
+        <VStack space="md" className="w-full">
+          <FormControl isRequired>
+            <FormControlLabel>
+              <FormControlLabelText className="font-medium text-gray-700">
+                Age Range
+              </FormControlLabelText>
+            </FormControlLabel>
+            <RadioGroup>
+              {age_range_options.map((option, index) => (
+                <Radio
+                  key={index}
+                  value={option.value}
+                  size="md"
+                  isInvalid={false}
+                  isDisabled={false}
+                >
+                  <RadioIndicator>
+                    <RadioIcon />
+                  </RadioIndicator>
+                  <RadioLabel>{option.label}</RadioLabel>
+                </Radio>
+              ))}
+            </RadioGroup>
+          </FormControl>
 
-        <FormControl isRequired>
-          <FormControlLabel>
-            <Text className="font-medium text-gray-700">Sexo</Text>
-          </FormControlLabel>
-          <RadioGroup
-            value={formData.gender}
-            onChange={(value) => handleInputChange("gender", value)}
-          >
-            <Radio value="male">
-              <RadioIndicator>
-                <RadioIcon />
-              </RadioIndicator>
-              <RadioLabel>Masculino</RadioLabel>
-            </Radio>
-            <Radio value="female">
-              <RadioIndicator>
-                <RadioIcon />
-              </RadioIndicator>
-              <RadioLabel>Feminino</RadioLabel>
-            </Radio>
-          </RadioGroup>
-        </FormControl>
+          <FormControl isRequired>
+            <FormControlLabel>
+              <FormControlLabelText className="font-medium text-gray-700">
+                Pick the model
+              </FormControlLabelText>
+            </FormControlLabel>
+            <VStack space="sm">
+              <Pressable
+                onPress={() => setSelectedModel("clinical")}
+                className={`
+                  border rounded-lg items-center
+                  ${
+                    selectedModel === "clinical"
+                      ? "border-orange-600"
+                      : "border-gray-500"
+                  }
+                  ${
+                    selectedModel === "clinical" ? "bg-orange-500" : "bg-white"
+                  }`}
+              >
+                <VStack className="items-center" space="md">
+                  <Icon
+                    color={
+                      selectedModel === "clinical" ? "$white" : "$orange500"
+                    }
+                    size="md"
+                  />
+                  <Text
+                    className={`font-semibold ${
+                      selectedModel === "clinical"
+                        ? "text-white"
+                        : "text-gray-700"
+                    }`}
+                  >
+                    Use clinical model
+                  </Text>
+                </VStack>
+              </Pressable>
 
-        <FormControl isRequired>
-          <FormControlLabel>
-            <Text className="font-medium text-gray-700">Peso (kg)</Text>
-          </FormControlLabel>
-          <Input>
-            <InputField
-              placeholder="Digite o peso em kg"
-              keyboardType="numeric"
-              value={formData.weight}
-              onChangeText={(value) => handleInputChange("weight", value)}
-            />
-          </Input>
-        </FormControl>
-
-        <FormControl isRequired>
-          <FormControlLabel>
-            <Text className="font-medium text-gray-700">Altura (cm)</Text>
-          </FormControlLabel>
-          <Input>
-            <InputField
-              placeholder="Digite a altura em cm"
-              keyboardType="numeric"
-              value={formData.height}
-              onChangeText={(value) => handleInputChange("height", value)}
-            />
-          </Input>
-        </FormControl>
-      </VStack>
-    </ScrollView>
+              <Pressable
+                onPress={() => setSelectedModel("lab")}
+                className={`
+                  rounded-lg items-center
+                  border
+                  ${
+                    selectedModel === "lab"
+                      ? "border-orange-600"
+                      : "border-gray-500"
+                  }
+                  ${selectedModel === "lab" ? "bg-orange-500" : "bg-white"}`}
+              >
+                <VStack className="items-center" space="md">
+                  <Icon
+                    color={selectedModel === "lab" ? "$white" : "$orange500"}
+                    size="md"
+                  />
+                  <Text
+                    className={`font-medium ${
+                      selectedModel === "lab" ? "text-white" : "text-gray-700"
+                    }`}
+                  >
+                    Use clinical and laboratorial model
+                  </Text>
+                </VStack>
+              </Pressable>
+            </VStack>
+          </FormControl>
+        </VStack>
+      </ScrollView>
+    ),
+    [formData]
   );
 
   // Step 2: Symptoms Form
-  const SymptomsForm = () => (
-    <ScrollView className="w-full mt-6">
-      <VStack space="md" className="w-full">
-        <FormControl>
-          <FormControlLabel>
-            <Text className="font-medium text-gray-700">
-              Sintomas Presentes
-            </Text>
-          </FormControlLabel>
-          <CheckboxGroup value={[]}>
-            <VStack space="sm">
-              <Checkbox
-                value="fever"
-                isChecked={formData.fever}
-                onChange={(isSelected) =>
-                  handleCheckboxChange("fever", isSelected)
+  const SymptomsForm = useMemo(
+    () => (
+      <ScrollView className="w-full mt-6">
+        <VStack space="md" className="w-full">
+          <FormControl>
+            <FormControlLabel>
+              <FormControlLabelText className="font-medium text-gray-700">
+                Sintomas Presentes
+              </FormControlLabelText>
+            </FormControlLabel>
+            <CheckboxGroup value={[]}>
+              <VStack space="sm">
+                <Checkbox
+                  value="fever"
+                  isChecked={formData.fever}
+                  onChange={(isSelected) =>
+                    handleCheckboxChange("fever", isSelected)
+                  }
+                >
+                  <CheckboxIndicator>
+                    <CheckboxIcon />
+                  </CheckboxIndicator>
+                  <CheckboxLabel>Febre</CheckboxLabel>
+                </Checkbox>
+
+                <Checkbox
+                  value="weakness"
+                  isChecked={formData.weakness}
+                  onChange={(isSelected) =>
+                    handleCheckboxChange("weakness", isSelected)
+                  }
+                >
+                  <CheckboxIndicator>
+                    <CheckboxIcon />
+                  </CheckboxIndicator>
+                  <CheckboxLabel>Fraqueza</CheckboxLabel>
+                </Checkbox>
+
+                <Checkbox
+                  value="bleeding"
+                  isChecked={formData.bleeding}
+                  onChange={(isSelected) =>
+                    handleCheckboxChange("bleeding", isSelected)
+                  }
+                >
+                  <CheckboxIndicator>
+                    <CheckboxIcon />
+                  </CheckboxIndicator>
+                  <CheckboxLabel>Sangramento</CheckboxLabel>
+                </Checkbox>
+
+                <Checkbox
+                  value="jaundice"
+                  isChecked={formData.jaundice}
+                  onChange={(isSelected) =>
+                    handleCheckboxChange("jaundice", isSelected)
+                  }
+                >
+                  <CheckboxIndicator>
+                    <CheckboxIcon />
+                  </CheckboxIndicator>
+                  <CheckboxLabel>Icterícia</CheckboxLabel>
+                </Checkbox>
+              </VStack>
+            </CheckboxGroup>
+          </FormControl>
+
+          <FormControl isRequired>
+            <FormControlLabel>
+              <FormControlLabelText className="font-medium text-gray-700">
+                Nível de Severidade
+              </FormControlLabelText>
+            </FormControlLabel>
+            <Select
+              selectedValue={formData.severityLevel}
+              onValueChange={(value) =>
+                handleInputChange("severityLevel", value)
+              }
+            >
+              <SelectTrigger>
+                <SelectInput placeholder="Selecione o nível" />
+              </SelectTrigger>
+              <SelectPortal>
+                <SelectContent>
+                  <SelectItem label="Leve" value="mild" />
+                  <SelectItem label="Moderado" value="moderate" />
+                  <SelectItem label="Severo" value="severe" />
+                  <SelectItem label="Crítico" value="critical" />
+                </SelectContent>
+              </SelectPortal>
+            </Select>
+          </FormControl>
+
+          <FormControl isRequired>
+            <FormControlLabel>
+              <FormControlLabelText className="font-medium text-gray-700">
+                Duração dos Sintomas (dias)
+              </FormControlLabelText>
+            </FormControlLabel>
+            <Input>
+              <InputField
+                placeholder="Digite a duração em dias"
+                keyboardType="numeric"
+                value={formData.durationDays}
+                onChangeText={(value) =>
+                  handleInputChange("durationDays", value)
                 }
-              >
-                <CheckboxIndicator>
-                  <CheckboxIcon />
-                </CheckboxIndicator>
-                <CheckboxLabel>Febre</CheckboxLabel>
-              </Checkbox>
-
-              <Checkbox
-                value="weakness"
-                isChecked={formData.weakness}
-                onChange={(isSelected) =>
-                  handleCheckboxChange("weakness", isSelected)
-                }
-              >
-                <CheckboxIndicator>
-                  <CheckboxIcon />
-                </CheckboxIndicator>
-                <CheckboxLabel>Fraqueza</CheckboxLabel>
-              </Checkbox>
-
-              <Checkbox
-                value="bleeding"
-                isChecked={formData.bleeding}
-                onChange={(isSelected) =>
-                  handleCheckboxChange("bleeding", isSelected)
-                }
-              >
-                <CheckboxIndicator>
-                  <CheckboxIcon />
-                </CheckboxIndicator>
-                <CheckboxLabel>Sangramento</CheckboxLabel>
-              </Checkbox>
-
-              <Checkbox
-                value="jaundice"
-                isChecked={formData.jaundice}
-                onChange={(isSelected) =>
-                  handleCheckboxChange("jaundice", isSelected)
-                }
-              >
-                <CheckboxIndicator>
-                  <CheckboxIcon />
-                </CheckboxIndicator>
-                <CheckboxLabel>Icterícia</CheckboxLabel>
-              </Checkbox>
-            </VStack>
-          </CheckboxGroup>
-        </FormControl>
-
-        <FormControl isRequired>
-          <FormControlLabel>
-            <Text className="font-medium text-gray-700">
-              Nível de Severidade
-            </Text>
-          </FormControlLabel>
-          <Select
-            selectedValue={formData.severityLevel}
-            onValueChange={(value) => handleInputChange("severityLevel", value)}
-          >
-            <SelectTrigger>
-              <SelectInput placeholder="Selecione o nível" />
-            </SelectTrigger>
-            <SelectPortal>
-              <SelectContent>
-                <SelectItem label="Leve" value="mild" />
-                <SelectItem label="Moderado" value="moderate" />
-                <SelectItem label="Severo" value="severe" />
-                <SelectItem label="Crítico" value="critical" />
-              </SelectContent>
-            </SelectPortal>
-          </Select>
-        </FormControl>
-
-        <FormControl isRequired>
-          <FormControlLabel>
-            <Text className="font-medium text-gray-700">
-              Duração dos Sintomas (dias)
-            </Text>
-          </FormControlLabel>
-          <Input>
-            <InputField
-              placeholder="Digite a duração em dias"
-              keyboardType="numeric"
-              value={formData.durationDays}
-              onChangeText={(value) => handleInputChange("durationDays", value)}
-            />
-          </Input>
-        </FormControl>
-      </VStack>
-    </ScrollView>
+              />
+            </Input>
+          </FormControl>
+        </VStack>
+      </ScrollView>
+    ),
+    [formData]
   );
 
   // Step 3: Results Form
-  const ResultsForm = () => (
-    <ScrollView className="w-full mt-6">
-      <VStack space="lg" className="w-full">
-        <Text className="font-bold text-lg text-center">Resumo dos Dados</Text>
+  const ResultsForm = useMemo(
+    () => (
+      <ScrollView className="w-full mt-6">
+        <VStack space="lg" className="w-full">
+          <Text className="font-bold text-lg text-center">
+            Resumo dos Dados
+          </Text>
 
-        <View className="bg-gray-100 p-4 rounded-lg">
-          <Text className="font-medium">Dados Pessoais</Text>
-          <View className="mt-2">
-            <Text>Idade: {formData.age} anos</Text>
-            <Text>
-              Sexo: {formData.gender === "male" ? "Masculino" : "Feminino"}
-            </Text>
-            <Text>Peso: {formData.weight} kg</Text>
-            <Text>Altura: {formData.height} cm</Text>
+          <View className="bg-gray-100 p-4 rounded-lg">
+            <Text className="font-medium">Dados Pessoais</Text>
+            <View className="mt-2">
+              <Text>Idade: {formData.age} anos</Text>
+              <Text>
+                Sexo: {formData.gender === "male" ? "Masculino" : "Feminino"}
+              </Text>
+              <Text>Peso: {formData.weight} kg</Text>
+              <Text>Altura: {formData.height} cm</Text>
+            </View>
           </View>
-        </View>
 
-        <View className="bg-gray-100 p-4 rounded-lg">
-          <Text className="font-medium">Sintomas</Text>
-          <View className="mt-2">
-            <Text>Febre: {formData.fever ? "Sim" : "Não"}</Text>
-            <Text>Fraqueza: {formData.weakness ? "Sim" : "Não"}</Text>
-            <Text>Sangramento: {formData.bleeding ? "Sim" : "Não"}</Text>
-            <Text>Icterícia: {formData.jaundice ? "Sim" : "Não"}</Text>
-            <Text>
-              Nível de Severidade:{" "}
-              {{
-                mild: "Leve",
-                moderate: "Moderado",
-                severe: "Severo",
-                critical: "Crítico",
-              }[formData.severityLevel] || "Não informado"}
-            </Text>
-            <Text>Duração: {formData.durationDays} dias</Text>
+          <View className="bg-gray-100 p-4 rounded-lg">
+            <Text className="font-medium">Sintomas</Text>
+            <View className="mt-2">
+              <Text>Febre: {formData.fever ? "Sim" : "Não"}</Text>
+              <Text>Fraqueza: {formData.weakness ? "Sim" : "Não"}</Text>
+              <Text>Sangramento: {formData.bleeding ? "Sim" : "Não"}</Text>
+              <Text>Icterícia: {formData.jaundice ? "Sim" : "Não"}</Text>
+              <Text>
+                Nível de Severidade:{" "}
+                {{
+                  mild: "Leve",
+                  moderate: "Moderado",
+                  severe: "Severo",
+                  critical: "Crítico",
+                }[formData.severityLevel] || "Não informado"}
+              </Text>
+              <Text>Duração: {formData.durationDays} dias</Text>
+            </View>
           </View>
-        </View>
 
-        <View className="bg-gray-100 p-4 rounded-lg">
-          <Text className="font-medium">Resultado do Cálculo</Text>
-          <View className="mt-2">
-            <Text className="text-lg font-bold text-center">
-              Probabilidade de Risco: 73%
-            </Text>
-            <Text className="mt-4 text-sm text-gray-600">
-              Nota: Esta é uma estimativa baseada nos dados fornecidos e não
-              deve ser interpretada como a chance exata de morte de um paciente
-              específico.
-            </Text>
+          <View className="bg-gray-100 p-4 rounded-lg">
+            <Text className="font-medium">Resultado do Cálculo</Text>
+            <View className="mt-2">
+              <Text className="text-lg font-bold text-center">
+                Probabilidade de Risco: 73%
+              </Text>
+              <Text className="mt-4 text-sm text-gray-600">
+                Nota: Esta é uma estimativa baseada nos dados fornecidos e não
+                deve ser interpretada como a chance exata de morte de um
+                paciente específico.
+              </Text>
+            </View>
           </View>
-        </View>
-      </VStack>
-    </ScrollView>
+        </VStack>
+      </ScrollView>
+    ),
+    [formData]
   );
 
-  // Mostrar o formulário correspondente ao passo atual
   switch (currentStep) {
     case 0:
-      return <AgeRangeForm />;
+      return AgeRangeForm;
     case 1:
-      return <SymptomsForm />;
+      return SymptomsForm;
     case 2:
-      return <ResultsForm />;
+      return ResultsForm;
     default:
       return <Text>Formulário não encontrado</Text>;
   }
