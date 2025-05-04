@@ -14,7 +14,7 @@ type StepperProps = {
 
 export function Stepper({ items, currentStep = 0 }: StepperProps) {
   return (
-    <View className="w-full">
+    <View className="w-full mt-4">
       <View className="flex-row items-center">
         {items.map((item, index) => {
           const isActive = index === currentStep;

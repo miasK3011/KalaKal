@@ -2,19 +2,11 @@ import { FormValues } from "@/app/kalacal";
 import React, { useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import {
-  Checkbox,
-  CheckboxGroup,
-  CheckboxIcon,
-  CheckboxIndicator,
-  CheckboxLabel,
-} from "../ui/checkbox";
-import {
   FormControl,
   FormControlLabel,
   FormControlLabelText,
 } from "../ui/form-control";
 import { Icon } from "../ui/icon";
-import { Input, InputField } from "../ui/input";
 import { Pressable } from "../ui/pressable";
 import {
   Radio,
@@ -23,14 +15,6 @@ import {
   RadioIndicator,
   RadioLabel,
 } from "../ui/radio";
-import {
-  Select,
-  SelectContent,
-  SelectInput,
-  SelectItem,
-  SelectPortal,
-  SelectTrigger,
-} from "../ui/select";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
@@ -54,26 +38,27 @@ export default function PaginatedForm({
     { label: "> 40 years", value: "40" },
   ];
 
-  const handleInputChange = (field: keyof FormData, value: any) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-    }));
-  };
+  const bleeding_sites_options = [
+    { label: "None", value: "0" },
+    { label: "1 to 2 sites", value: "1-2" },
+    { label: "3 to 4 sites", value: "3-4" },
+    { label: "5 to 6 sites", value: "5-6" },
+  ];
 
-  const handleCheckboxChange = (field: keyof FormData, value: boolean) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-    }));
-  };
+  const other_symptons_options = [
+    { label: "Edema", value: "edema" },
+    { label: "HIV/AIDS", value: "HIV-AIDS" },
+    { label: "Jaundice", value: "jaundice" },
+    { label: "Vomiting", value: "Dyspnoea" },
+    { label: "Bacterial Infection", value: "bacterial-infection" },
+  ];
 
   const AgeRangeForm = useMemo(
     () => (
       <ScrollView className="w-full mt-6">
         <VStack space="md" className="w-full">
           <FormControl isRequired>
-            <FormControlLabel>
+            <FormControlLabel className="mb-2">
               <FormControlLabelText className="font-medium text-gray-700">
                 Age Range
               </FormControlLabelText>
@@ -83,6 +68,9 @@ export default function PaginatedForm({
                 <Radio
                   key={index}
                   value={option.value}
+                  onPress={() => {
+                    setFormData({ ...formData, age_range: option.value });
+                  }}
                   size="md"
                   isInvalid={false}
                   isDisabled={false}
@@ -95,22 +83,26 @@ export default function PaginatedForm({
               ))}
             </RadioGroup>
           </FormControl>
+          <View className="flex-1 w-full h-[1px] bg-gray-200 my-4" />
 
           <FormControl isRequired>
-            <FormControlLabel>
+            <FormControlLabel className="mb-2">
               <FormControlLabelText className="font-medium text-gray-700">
                 Pick the model
               </FormControlLabelText>
             </FormControlLabel>
             <VStack space="sm">
               <Pressable
-                onPress={() => setSelectedModel("clinical")}
+                onPress={() => {
+                  setFormData({ ...formData, clincal_model: selectedModel });
+                  setSelectedModel("clinical");
+                }}
                 className={`
                   border rounded-lg items-center
                   ${
                     selectedModel === "clinical"
                       ? "border-orange-600"
-                      : "border-gray-500"
+                      : "border-gray-200"
                   }
                   ${
                     selectedModel === "clinical" ? "bg-orange-500" : "bg-white"
@@ -118,8 +110,10 @@ export default function PaginatedForm({
               >
                 <VStack className="items-center" space="md">
                   <Icon
-                    color={
-                      selectedModel === "clinical" ? "$white" : "$orange500"
+                    className={
+                      selectedModel === "lab"
+                        ? "stroke-white"
+                        : "stroke-orange-500"
                     }
                     size="md"
                   />
@@ -143,13 +137,17 @@ export default function PaginatedForm({
                   ${
                     selectedModel === "lab"
                       ? "border-orange-600"
-                      : "border-gray-500"
+                      : "border-gray-200"
                   }
                   ${selectedModel === "lab" ? "bg-orange-500" : "bg-white"}`}
               >
                 <VStack className="items-center" space="md">
                   <Icon
-                    color={selectedModel === "lab" ? "$white" : "$orange500"}
+                    className={
+                      selectedModel === "lab"
+                        ? "stroke-white"
+                        : "stroke-orange-500"
+                    }
                     size="md"
                   />
                   <Text
@@ -163,122 +161,75 @@ export default function PaginatedForm({
               </Pressable>
             </VStack>
           </FormControl>
+          <View className="bg-[#FBF5DA] text-[#824417] px-3 py-2 rounded-md flex flex-row mt-3">
+            <Text>
+              Warning: These estimations of death probability should NOT be
+              taken as the chance of death of any specific patient, but as an
+              indicator of the disease severity in other similar patient
+              populations at a different place or time.
+            </Text>
+          </View>
         </VStack>
       </ScrollView>
     ),
     [formData]
   );
 
-  // Step 2: Symptoms Form
   const SymptomsForm = useMemo(
     () => (
       <ScrollView className="w-full mt-6">
         <VStack space="md" className="w-full">
           <FormControl>
             <FormControlLabel>
-              <FormControlLabelText className="font-medium text-gray-700">
-                Sintomas Presentes
+              <FormControlLabelText>
+                Number of bleeding sites
               </FormControlLabelText>
             </FormControlLabel>
-            <CheckboxGroup value={[]}>
-              <VStack space="sm">
-                <Checkbox
-                  value="fever"
-                  isChecked={formData.fever}
-                  onChange={(isSelected) =>
-                    handleCheckboxChange("fever", isSelected)
-                  }
+            <RadioGroup>
+              {bleeding_sites_options.map((option, index) => (
+                <Radio
+                  key={index}
+                  value={option.value}
+                  onPress={() => {
+                    setFormData({ ...formData, bleeding_sites: option.value });
+                  }}
+                  size="md"
+                  isInvalid={false}
+                  isDisabled={false}
                 >
-                  <CheckboxIndicator>
-                    <CheckboxIcon />
-                  </CheckboxIndicator>
-                  <CheckboxLabel>Febre</CheckboxLabel>
-                </Checkbox>
-
-                <Checkbox
-                  value="weakness"
-                  isChecked={formData.weakness}
-                  onChange={(isSelected) =>
-                    handleCheckboxChange("weakness", isSelected)
-                  }
-                >
-                  <CheckboxIndicator>
-                    <CheckboxIcon />
-                  </CheckboxIndicator>
-                  <CheckboxLabel>Fraqueza</CheckboxLabel>
-                </Checkbox>
-
-                <Checkbox
-                  value="bleeding"
-                  isChecked={formData.bleeding}
-                  onChange={(isSelected) =>
-                    handleCheckboxChange("bleeding", isSelected)
-                  }
-                >
-                  <CheckboxIndicator>
-                    <CheckboxIcon />
-                  </CheckboxIndicator>
-                  <CheckboxLabel>Sangramento</CheckboxLabel>
-                </Checkbox>
-
-                <Checkbox
-                  value="jaundice"
-                  isChecked={formData.jaundice}
-                  onChange={(isSelected) =>
-                    handleCheckboxChange("jaundice", isSelected)
-                  }
-                >
-                  <CheckboxIndicator>
-                    <CheckboxIcon />
-                  </CheckboxIndicator>
-                  <CheckboxLabel>Icterícia</CheckboxLabel>
-                </Checkbox>
-              </VStack>
-            </CheckboxGroup>
+                  <RadioIndicator>
+                    <RadioIcon />
+                  </RadioIndicator>
+                  <RadioLabel>{option.label}</RadioLabel>
+                </Radio>
+              ))}
+            </RadioGroup>
           </FormControl>
-
-          <FormControl isRequired>
+          <FormControl>
             <FormControlLabel>
-              <FormControlLabelText className="font-medium text-gray-700">
-                Nível de Severidade
+              <FormControlLabelText>
+                Other signs and symptoms
               </FormControlLabelText>
             </FormControlLabel>
-            <Select
-              selectedValue={formData.severityLevel}
-              onValueChange={(value) =>
-                handleInputChange("severityLevel", value)
-              }
-            >
-              <SelectTrigger>
-                <SelectInput placeholder="Selecione o nível" />
-              </SelectTrigger>
-              <SelectPortal>
-                <SelectContent>
-                  <SelectItem label="Leve" value="mild" />
-                  <SelectItem label="Moderado" value="moderate" />
-                  <SelectItem label="Severo" value="severe" />
-                  <SelectItem label="Crítico" value="critical" />
-                </SelectContent>
-              </SelectPortal>
-            </Select>
-          </FormControl>
-
-          <FormControl isRequired>
-            <FormControlLabel>
-              <FormControlLabelText className="font-medium text-gray-700">
-                Duração dos Sintomas (dias)
-              </FormControlLabelText>
-            </FormControlLabel>
-            <Input>
-              <InputField
-                placeholder="Digite a duração em dias"
-                keyboardType="numeric"
-                value={formData.durationDays}
-                onChangeText={(value) =>
-                  handleInputChange("durationDays", value)
-                }
-              />
-            </Input>
+            <RadioGroup>
+              {other_symptons_options.map((option, index) => (
+                <Radio
+                  key={index}
+                  value={option.value}
+                  onPress={() => {
+                    setFormData({ ...formData, other_symptons: option.value });
+                  }}
+                  size="md"
+                  isInvalid={false}
+                  isDisabled={false}
+                >
+                  <RadioIndicator>
+                    <RadioIcon />
+                  </RadioIndicator>
+                  <RadioLabel>{option.label}</RadioLabel>
+                </Radio>
+              ))}
+            </RadioGroup>
           </FormControl>
         </VStack>
       </ScrollView>
@@ -286,64 +237,15 @@ export default function PaginatedForm({
     [formData]
   );
 
-  // Step 3: Results Form
   const ResultsForm = useMemo(
     () => (
       <ScrollView className="w-full mt-6">
-        <VStack space="lg" className="w-full">
-          <Text className="font-bold text-lg text-center">
-            Resumo dos Dados
-          </Text>
-
-          <View className="bg-gray-100 p-4 rounded-lg">
-            <Text className="font-medium">Dados Pessoais</Text>
-            <View className="mt-2">
-              <Text>Idade: {formData.age} anos</Text>
-              <Text>
-                Sexo: {formData.gender === "male" ? "Masculino" : "Feminino"}
-              </Text>
-              <Text>Peso: {formData.weight} kg</Text>
-              <Text>Altura: {formData.height} cm</Text>
-            </View>
-          </View>
-
-          <View className="bg-gray-100 p-4 rounded-lg">
-            <Text className="font-medium">Sintomas</Text>
-            <View className="mt-2">
-              <Text>Febre: {formData.fever ? "Sim" : "Não"}</Text>
-              <Text>Fraqueza: {formData.weakness ? "Sim" : "Não"}</Text>
-              <Text>Sangramento: {formData.bleeding ? "Sim" : "Não"}</Text>
-              <Text>Icterícia: {formData.jaundice ? "Sim" : "Não"}</Text>
-              <Text>
-                Nível de Severidade:{" "}
-                {{
-                  mild: "Leve",
-                  moderate: "Moderado",
-                  severe: "Severo",
-                  critical: "Crítico",
-                }[formData.severityLevel] || "Não informado"}
-              </Text>
-              <Text>Duração: {formData.durationDays} dias</Text>
-            </View>
-          </View>
-
-          <View className="bg-gray-100 p-4 rounded-lg">
-            <Text className="font-medium">Resultado do Cálculo</Text>
-            <View className="mt-2">
-              <Text className="text-lg font-bold text-center">
-                Probabilidade de Risco: 73%
-              </Text>
-              <Text className="mt-4 text-sm text-gray-600">
-                Nota: Esta é uma estimativa baseada nos dados fornecidos e não
-                deve ser interpretada como a chance exata de morte de um
-                paciente específico.
-              </Text>
-            </View>
-          </View>
+        <VStack space="md" className="w-full">
+          <Text>Results</Text>
         </VStack>
       </ScrollView>
     ),
-    [formData]
+    []
   );
 
   switch (currentStep) {

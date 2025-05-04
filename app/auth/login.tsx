@@ -27,7 +27,7 @@ export default function EntrarScreen() {
     setTimeout(() => {
       setLoading(false);
       router.replace("/home/(tabs)/menu");
-    }, 1500);
+    }, 200);
   };
 
   return (

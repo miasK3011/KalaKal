@@ -27,16 +27,12 @@ const symptonsSchema = z.object({
     .nonempty("Por favor, informe a idade do paciente."),
   other_symptons: z
     .string()
-    .nonempty("Por favor, selecione o sexo do paciente."),
+    .nonempty("Por favor, selecione o sintoma do paciente."),
 });
 
 const ageRangeSchema = z.object({
   age_range: z.string().nonempty("Por favor, informe a idade do paciente."),
   clincal_model: z.string().nonempty("Por favor, informe o modelo clínico."),
-});
-
-const reviewSchema = z.object({
-  reviewData: z.boolean(),
 });
 
 export default function KalaCal() {
@@ -112,68 +108,75 @@ export default function KalaCal() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
-    >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <StatusBar barStyle="dark-content" />
-        <View className="items-center mt-9">
-          <Image
-            source={require("@/assets/images/kalacal-banner.png")}
-            className="w-[100px] h-[43px]"
-          />
-        </View>
-        <View className="items-center p-4 border rounded-xl border-gray-200 bg-white mt-5 mx-4">
-          <Stepper items={stepperItems} currentStep={currentStep} />
-          <View className="my-8">
-            <Text
-              className="text-2xl text-center"
-              style={{
-                fontFamily: "Gidole",
-              }}
-            >
-              PROGNOSTICATING KALA-AZAR
-            </Text>
-          </View>
-          <View className="mb-8 w-full">
-            <Text className="text-justify text-sm text-gray-500">
-              Estimation of death probability for kala-azar patients accordingly
-              to data collected from patients treated in Teresina-PI, Brazil,
-              from 2005 to 2013
-            </Text>
-          </View>
-          <View className="flex-1 w-full h-[1px] bg-gray-200 mx-2" />
-          <PaginatedForm
-            currentStep={currentStep}
-            formData={formData}
-            setFormData={setFormData}
-          />
+    <>
+      <StatusBar barStyle="dark-content" />
+      <View className="items-center mt-9">
+        <Image
+          source={require("@/assets/images/kalacal-banner.png")}
+          className="w-[100px] h-[43px]"
+        />
+      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="flex-1"
+        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+      >
+        <View className="items-center px-4 border rounded-xl border-gray-200 bg-white mt-5 mx-4 mb-5 overflow-hidden">
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            showsVerticalScrollIndicator={false}
+          >
+            <Stepper items={stepperItems} currentStep={currentStep} />
+            <View className="my-8">
+              <Text
+                className="text-2xl text-center"
+                style={{
+                  fontFamily: "Gidole",
+                }}
+              >
+                PROGNOSTICATING KALA-AZAR
+              </Text>
+            </View>
+            <View className="mb-8 w-full">
+              <Text className="text-justify text-sm text-gray-500">
+                Estimation of death probability for kala-azar patients
+                accordingly to data collected from patients treated in
+                Teresina-PI, Brazil, from 2005 to 2013
+              </Text>
+            </View>
+            <View className="flex-1 w-full h-[1px] bg-gray-200 mx-2" />
+            <PaginatedForm
+              currentStep={currentStep}
+              formData={formData}
+              setFormData={setFormData}
+            />
 
-          <View className="flex-row justify-between mt-8 gap-3 w-full">
-            <Button
-              onPress={prevStep}
-              disabled={currentStep === 0}
-              className="flex-1"
-              action="secondary"
-              variant={currentStep === 0 ? "solid" : "solid"}
-            >
-              <ButtonText>Voltar</ButtonText>
-            </Button>
+            <View className="flex-row justify-between mt-8 mb-4 gap-3 w-full">
+              {currentStep > 0 && (
+                <Button
+                  onPress={prevStep}
+                  disabled={currentStep === 0}
+                  className="flex-1"
+                  action="secondary"
+                  variant={currentStep === 0 ? "solid" : "solid"}
+                >
+                  <ButtonText>Voltar</ButtonText>
+                </Button>
+              )}
 
-            {currentStep === stepperItems.length - 1 ? (
-              <Button onPress={handleSubmit} className="flex-1 bg-green-600">
-                <ButtonText>Finalizar</ButtonText>
-              </Button>
-            ) : (
-              <Button onPress={nextStep} className="flex-1">
-                <ButtonText>Próximo</ButtonText>
-              </Button>
-            )}
-          </View>
+              {currentStep === stepperItems.length - 1 ? (
+                <Button onPress={handleSubmit} className="flex-1 bg-green-600">
+                  <ButtonText>Finalizar</ButtonText>
+                </Button>
+              ) : (
+                <Button onPress={nextStep} className="flex-1">
+                  <ButtonText>Próximo</ButtonText>
+                </Button>
+              )}
+            </View>
+          </ScrollView>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </>
   );
 }
