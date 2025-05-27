@@ -1,5 +1,5 @@
 {
-  "name": "redekalacal",
+  "name": "kalacalapp",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
@@ -59,6 +59,7 @@
     "react-native": "0.79.2",
     "react-native-css-interop": "^0.1.22",
     "react-native-gesture-handler": "~2.24.0",
+    "expo-modules-autolinking": "*",
     "react-native-maps": "1.23.8",
     "react-native-reanimated": "~3.17.5",
     "react-native-safe-area-context": "5.4.0",
@@ -71,12 +72,12 @@
     "zod": "^3.24.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2",
+    "@babel/core": "^7.26.9",
     "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@types/jest": "^29.5.12",
     "@types/react": "~19.0.14",
     "@types/react-test-renderer": "^18.3.0",
-    "jest": "^29.2.1",
+    "jest": "^29.7.0",
     "jest-expo": "~53.0.5",
     "jscodeshift": "^0.15.2",
     "react-test-renderer": "18.3.1",
