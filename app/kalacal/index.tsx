@@ -16,23 +16,24 @@ import { Text } from "../../components/ui/text";
 
 export interface FormValues {
   age_range: string;
-  clincal_model: string;
+  clinical_model: string;
   bleeding_sites: string;
-  other_symptons: string;
+  other_symptons: string[];
 }
 
 const symptonsSchema = z.object({
   bleeding_sites: z
     .string()
-    .nonempty("Por favor, informe a idade do paciente."),
+    .nonempty("Por favor, informe o número de locais de sangramento."),
   other_symptons: z
-    .string()
-    .nonempty("Por favor, selecione o sintoma do paciente."),
+    .array(z.string())
+    .min(1, "Por favor, selecione pelo menos um sintoma.")
+    .optional(),
 });
 
 const ageRangeSchema = z.object({
   age_range: z.string().nonempty("Por favor, informe a idade do paciente."),
-  clincal_model: z.string().nonempty("Por favor, informe o modelo clínico."),
+  clinical_model: z.string().nonempty("Por favor, informe o modelo clínico."),
 });
 
 export default function KalaCal() {
@@ -40,9 +41,9 @@ export default function KalaCal() {
 
   const initialFormData: FormValues = useRef({
     age_range: "",
-    clincal_model: "",
+    clinical_model: "",
     bleeding_sites: "",
-    other_symptons: "",
+    other_symptons: [],
   }).current;
 
   const [formData, setFormData] = useState<FormValues>(initialFormData);
@@ -58,7 +59,7 @@ export default function KalaCal() {
       case 0: {
         const result = ageRangeSchema.safeParse({
           age_range: formData.age_range,
-          clincal_model: formData.clincal_model,
+          clinical_model: formData.clinical_model,
         });
 
         if (!result.success) {
@@ -137,14 +138,7 @@ export default function KalaCal() {
                 PROGNOSTICATING KALA-AZAR
               </Text>
             </View>
-            <View className="mb-8 w-full">
-              <Text className="text-justify text-sm text-gray-500">
-                Estimation of death probability for kala-azar patients
-                accordingly to data collected from patients treated in
-                Teresina-PI, Brazil, from 2005 to 2013
-              </Text>
-            </View>
-            <View className="flex-1 w-full h-[1px] bg-gray-200 mx-2" />
+
             <PaginatedForm
               currentStep={currentStep}
               formData={formData}
@@ -153,20 +147,33 @@ export default function KalaCal() {
 
             <View className="flex-row justify-between mt-8 mb-4 gap-3 w-full">
               {currentStep > 0 && (
-                <Button
-                  onPress={prevStep}
-                  disabled={currentStep === 0}
-                  className="flex-1"
-                  action="secondary"
-                  variant={currentStep === 0 ? "solid" : "solid"}
-                >
-                  <ButtonText>Voltar</ButtonText>
-                </Button>
+                <View className="w-1/2">
+                  <Button
+                    onPress={prevStep}
+                    disabled={currentStep === 0}
+                    className="flex-1"
+                    action="secondary"
+                    variant={currentStep === 0 ? "solid" : "solid"}
+                  >
+                    <ButtonText>Voltar</ButtonText>
+                  </Button>
+                </View>
               )}
 
               {currentStep === stepperItems.length - 1 ? (
-                <Button onPress={handleSubmit} className="flex-1 bg-green-600">
-                  <ButtonText>Finalizar</ButtonText>
+                <Button
+                  onPress={() => {
+                    setFormData({
+                      age_range: "",
+                      clinical_model: "",
+                      bleeding_sites: "",
+                      other_symptons: [],
+                    });
+                    setCurrentStep(0);
+                  }}
+                  className="flex-1"
+                >
+                  <ButtonText className="text-white">New Estimate</ButtonText>
                 </Button>
               ) : (
                 <Button onPress={nextStep} className="flex-1">
