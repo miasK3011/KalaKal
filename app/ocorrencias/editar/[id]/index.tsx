@@ -268,7 +268,7 @@ export default function EditarOcorrenciaScreen(): JSX.Element {
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           <View className="bg-white rounded-xl p-6 mb-6 shadow-sm">
             <Text className="text-xl font-bold text-gray-800 mb-6">
-              Editar Ocorrência
+              Dados Pessoais
             </Text>
 
             <View className="mb-4">
