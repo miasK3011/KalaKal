@@ -31,7 +31,7 @@ const menu: Menu[][] = [
       icone: "map-marker-multiple",
       titulo: "Ocorrência dos Casos",
       cor: "lightcoral",
-      screen: "/leishmaniose",
+      screen: "/ocorrencias",
     },
     {
       image: require("@/assets/images/pontos-cuidado-icon.png"),
