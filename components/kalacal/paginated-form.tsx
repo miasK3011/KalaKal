@@ -55,7 +55,7 @@ export default function PaginatedForm({
         <VStack space="md" className="w-full">
           <FormControl isRequired isInvalid={!!errors?.caso_id}>
             <FormControlLabel>
-              <FormControlLabelText>ID do Paciente</FormControlLabelText>
+              <FormControlLabelText>ID do Caso</FormControlLabelText>
             </FormControlLabel>
             <TextInput
               className={`bg-gray-100 rounded-lg px-4 py-3 text-base text-gray-800 ${

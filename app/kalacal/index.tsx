@@ -6,9 +6,14 @@ import {
   step2Schema,
 } from "@/components/kalacal/schemas/kalacal-form-schema";
 import { Stepper } from "@/components/kalacal/stepper";
-import { KalacalFormData, KalacalOptions, KalacalResponse } from "@/components/kalacal/types";
+import {
+  KalacalFormData,
+  KalacalOptions,
+  KalacalResponse,
+} from "@/components/kalacal/types";
 import { Button, ButtonText } from "@/components/ui/button";
 import api from "@/services/api";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -29,18 +34,26 @@ export default function KalaCal() {
   const [errors, setErrors] = useState<any>({});
   const [apiResult, setApiResult] = useState<KalacalResponse>();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fetchingError, setFetchingError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchOptions() {
-      const options = await getKalacalOptions();
-      if (options) {
-        setFormOptions(options);
-      } else {
-        Alert.alert(
-          "Erro",
-          "Não foi possível carregar as opções do formulário."
+      try {
+        const options = await getKalacalOptions();
+        if (options) {
+          setFormOptions(options);
+        } else {
+          setFetchingError(
+            "Erro ao carregar as opções do Kalacal. Tente novamente mais tarde."
+          );
+        }
+      } catch {
+        console.log("Erro ao buscar opções do Kalacal");
+        setFetchingError(
+          "Erro ao carregar as opções do Kalacal. Tente novamente mais tarde."
         );
       }
+
       setIsFetching(false);
     }
 
@@ -107,7 +120,6 @@ export default function KalaCal() {
   };
 
   const handleSubmit = async () => {
-    console.log("Submitting form data:", formData);
     if (!validateCurrentStep()) return;
 
     setIsSubmitting(true);
@@ -144,8 +156,26 @@ export default function KalaCal() {
     return (
       <View className="flex-1 justify-center items-center">
         <ActivityIndicator size="large" color="#000" />
-        <Text className="mt-2">Carregando opções...</Text>
+        <Text className="mt-2">Carregando Kalacal...</Text>
       </View>
+    );
+  }
+
+  if (fetchingError) {
+    return (
+      <>
+        <StatusBar barStyle="dark-content" />
+        <View className="flex-1 justify-center items-center px-4">
+          <View className="flex justify-center items-center mb-4">
+            <Text className="text-red-500 text-center">{fetchingError}</Text>
+          </View>
+          <Button>
+            <ButtonText onPress={() => router.back()}>
+              Retornar para a página anterior
+            </ButtonText>
+          </Button>
+        </View>
+      </>
     );
   }
 
