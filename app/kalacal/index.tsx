@@ -154,10 +154,13 @@ export default function KalaCal() {
 
   if (isFetching) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#000" />
-        <Text className="mt-2">Carregando Kalacal...</Text>
-      </View>
+      <>
+        <StatusBar barStyle="dark-content" />
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color="orange" />
+          <Text className="mt-2">Carregando Kalacal...</Text>
+        </View>
+      </>
     );
   }
 
