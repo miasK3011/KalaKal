@@ -1,4 +1,4 @@
-import GetOcorrencias from "@/components/ocorrencias/api/get-Ocorrencias";
+import getOcorrencias from "@/components/ocorrencias/api/get-Ocorrencias";
 import { Ocorrencia } from "@/components/ocorrencias/types";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -20,7 +20,6 @@ import {
   View,
 } from "react-native";
 
-// Objeto para mapear o tipo de caso ao ícone
 const tipoIcones: { [key: string]: string } = {
   humano: "🧑",
   animal: "🐾",
@@ -33,7 +32,7 @@ export default function OcorrenciasScreen() {
   useFocusEffect(
     useCallback(() => {
       async function carregarOcorrencias() {
-        const dados = await GetOcorrencias();
+        const dados = await getOcorrencias();
         setCasos(dados);
         setIsLoading(false);
       }
@@ -128,7 +127,7 @@ export default function OcorrenciasScreen() {
 
               <View className="flex-row items-center gap-5">
                 <TouchableOpacity onPress={() => handleEdit(caso.id)}>
-                  <FontAwesomeIcon icon={faPen} size={18} color="gray"/>
+                  <FontAwesomeIcon icon={faPen} size={18} color="gray" />
                 </TouchableOpacity>
 
                 <TouchableOpacity

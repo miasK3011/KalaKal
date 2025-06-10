@@ -1,8 +1,17 @@
+import getKalacalOptions from "@/components/kalacal/api/get-options";
+import { stepperItems } from "@/components/kalacal/lib/stepper-items";
 import PaginatedForm from "@/components/kalacal/paginated-form";
-import { Stepper } from "@/components/kalacal/stepper";
-import { Button, ButtonText } from "@/components/ui/button";
-import React, { useRef, useState } from "react";
 import {
+  step1Schema,
+  step2Schema,
+} from "@/components/kalacal/schemas/kalacal-form-schema";
+import { Stepper } from "@/components/kalacal/stepper";
+import { KalacalFormData, KalacalOptions, KalacalResponse } from "@/components/kalacal/types";
+import { Button, ButtonText } from "@/components/ui/button";
+import api from "@/services/api";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
   Alert,
   Image,
   KeyboardAvoidingView,
@@ -11,87 +20,81 @@ import {
   StatusBar,
   View,
 } from "react-native";
-import { z } from "zod";
 import { Text } from "../../components/ui/text";
-
-export interface FormValues {
-  age_range: string;
-  clinical_model: string;
-  bleeding_sites: string;
-  other_symptons: string[];
-}
-
-const symptonsSchema = z.object({
-  bleeding_sites: z
-    .string()
-    .nonempty("Por favor, informe o número de locais de sangramento."),
-  other_symptons: z
-    .array(z.string())
-    .min(1, "Por favor, selecione pelo menos um sintoma.")
-    .optional(),
-});
-
-const ageRangeSchema = z.object({
-  age_range: z.string().nonempty("Por favor, informe a idade do paciente."),
-  clinical_model: z.string().nonempty("Por favor, informe o modelo clínico."),
-});
 
 export default function KalaCal() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [formOptions, setFormOptions] = useState<KalacalOptions | null>(null);
+  const [isFetching, setIsFetching] = useState(true);
+  const [errors, setErrors] = useState<any>({});
+  const [apiResult, setApiResult] = useState<KalacalResponse>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const initialFormData: FormValues = useRef({
-    age_range: "",
-    clinical_model: "",
-    bleeding_sites: "",
-    other_symptons: [],
-  }).current;
+  useEffect(() => {
+    async function fetchOptions() {
+      const options = await getKalacalOptions();
+      if (options) {
+        setFormOptions(options);
+      } else {
+        Alert.alert(
+          "Erro",
+          "Não foi possível carregar as opções do formulário."
+        );
+      }
+      setIsFetching(false);
+    }
 
-  const [formData, setFormData] = useState<FormValues>(initialFormData);
+    fetchOptions();
+  }, []);
 
-  const stepperItems = [
-    { title: "Age Range" },
-    { title: "Symptons" },
-    { title: "Results" },
-  ];
+  const [formData, setFormData] = useState<KalacalFormData>({
+    caso_id: "",
+    modelo: "clinico",
+    faixa_etaria_kalacal: -1,
+    sitios_sangramento: -1,
+    edema: false,
+    aids: false,
+    ictericia: false,
+    dispneia: false,
+    infeccao: false,
+    vomitos: false,
+    leucopenia: false,
+    plaquetopenia: false,
+    insuficiencia_renal: false,
+    hepatite: false,
+    observacoes: "",
+  });
 
   const validateCurrentStep = () => {
-    switch (currentStep) {
-      case 0: {
-        const result = ageRangeSchema.safeParse({
-          age_range: formData.age_range,
-          clinical_model: formData.clinical_model,
-        });
-
-        if (!result.success) {
-          const error = result.error.errors[0];
-          Alert.alert("Dados incompletos", error.message);
-          return false;
-        }
-        return true;
-      }
-
-      case 1: {
-        const result = symptonsSchema.safeParse({
-          bleeding_sites: formData.bleeding_sites,
-          other_symptons: formData.other_symptons,
-        });
-
-        if (!result.success) {
-          const error = result.error.errors[0];
-          Alert.alert("Dados incompletos", error.message);
-          return false;
-        }
-        return true;
-      }
-
-      default:
-        return true;
+    let result;
+    if (currentStep === 0) {
+      result = step1Schema.safeParse(formData);
+    } else if (currentStep === 1) {
+      result = step2Schema.safeParse(formData);
+    } else {
+      return true;
     }
+
+    if (!result.success) {
+      const formattedErrors = result.error.flatten().fieldErrors;
+      setErrors(formattedErrors);
+      Alert.alert(
+        "Dados incompletos",
+        Object.values(formattedErrors)[0]?.[0] ||
+          "Por favor, preencha os campos obrigatórios."
+      );
+      return false;
+    }
+
+    setErrors({});
+    return true;
   };
 
   const nextStep = () => {
-    if (validateCurrentStep()) {
-      if (currentStep < stepperItems.length - 1) {
+    if (currentStep === 1) {
+      handleSubmit();
+    } else {
+      if (validateCurrentStep()) {
         setCurrentStep(currentStep + 1);
       }
     }
@@ -103,10 +106,48 @@ export default function KalaCal() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Formulário enviado:", formData);
-    Alert.alert("Sucesso", "Dados processados com sucesso!", [{ text: "OK" }]);
+  const handleSubmit = async () => {
+    console.log("Submitting form data:", formData);
+    if (!validateCurrentStep()) return;
+
+    setIsSubmitting(true);
+
+    const dataAsFormData = new FormData();
+
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        dataAsFormData.append(key, String(value));
+      }
+    });
+
+    try {
+      const response = await api.post("/kalacal/calcular/", dataAsFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      setApiResult(response.data as KalacalResponse);
+
+      if (currentStep < stepperItems.length - 1) {
+        setCurrentStep(currentStep + 1);
+      }
+    } catch (error) {
+      console.error("Erro ao enviar formulário:", error);
+      Alert.alert("Erro", "Não foi possível processar a solicitação.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  if (isFetching) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#000" />
+        <Text className="mt-2">Carregando opções...</Text>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -143,6 +184,9 @@ export default function KalaCal() {
               currentStep={currentStep}
               formData={formData}
               setFormData={setFormData}
+              options={formOptions}
+              errors={errors}
+              apiResult={apiResult}
             />
 
             <View className="flex-row justify-between mt-8 mb-4 gap-3 w-full">
@@ -164,20 +208,40 @@ export default function KalaCal() {
                 <Button
                   onPress={() => {
                     setFormData({
-                      age_range: "",
-                      clinical_model: "",
-                      bleeding_sites: "",
-                      other_symptons: [],
+                      caso_id: "",
+                      modelo: "clinico",
+                      faixa_etaria_kalacal: -1,
+                      sitios_sangramento: -1,
+                      edema: false,
+                      aids: false,
+                      ictericia: false,
+                      dispneia: false,
+                      infeccao: false,
+                      vomitos: false,
+                      leucopenia: false,
+                      plaquetopenia: false,
+                      insuficiencia_renal: false,
+                      hepatite: false,
+                      observacoes: "",
                     });
+                    setApiResult(undefined);
                     setCurrentStep(0);
                   }}
                   className="flex-1"
                 >
-                  <ButtonText className="text-white">New Estimate</ButtonText>
+                  <ButtonText className="text-white">
+                    Nova Estimativa
+                  </ButtonText>
                 </Button>
               ) : (
-                <Button onPress={nextStep} className="flex-1">
-                  <ButtonText>Próximo</ButtonText>
+                <Button
+                  onPress={nextStep}
+                  className="flex-1"
+                  disabled={isSubmitting}
+                >
+                  <ButtonText>
+                    {isSubmitting ? "Processando..." : "Próximo"}
+                  </ButtonText>
                 </Button>
               )}
             </View>

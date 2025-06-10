@@ -1,10 +1,9 @@
-import { FormValues } from "@/app/kalacal";
 import { faMicroscope } from "@fortawesome/free-solid-svg-icons/faMicroscope";
 import { faNotesMedical } from "@fortawesome/free-solid-svg-icons/faNotesMedical";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons/faTriangleExclamation";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import React, { useMemo, useState } from "react";
-import { ScrollView, View } from "react-native";
+import React, { useMemo } from "react";
+import { ScrollView, TextInput, View } from "react-native";
 import {
   Checkbox,
   CheckboxIcon,
@@ -26,197 +25,72 @@ import {
 } from "../ui/radio";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
+import { KalacalFormData, KalacalOptions, KalacalResponse } from "./types";
 
 export default function PaginatedForm({
   currentStep,
   formData,
   setFormData,
+  options,
+  errors,
+  apiResult,
 }: {
   currentStep: number;
-  formData: FormValues;
-  setFormData: React.Dispatch<React.SetStateAction<FormValues>>;
+  formData: KalacalFormData;
+  setFormData: React.Dispatch<React.SetStateAction<KalacalFormData>>;
+  options: KalacalOptions | null;
+  errors: any;
+  apiResult: KalacalResponse | undefined;
 }) {
-  const [selectedModel, setSelectedModel] = useState<String>(
-    formData.clinical_model || "clinical"
-  );
-
-  const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>(
-    formData.other_symptons || []
-  );
-
-  const age_range_options = [
-    { label: "< 12 months old", value: "0-1" },
-    { label: "12 - 23 months", value: "2-4" },
-    { label: "2 - 15 years", value: "2-15" },
-    { label: "16-39 years", value: "19-39" },
-    { label: "> 40 years", value: "40" },
-  ];
-
-  const bleeding_sites_options = [
-    { label: "None", value: "0" },
-    { label: "1 to 2 sites", value: "1-2" },
-    { label: "3 to 4 sites", value: "3-4" },
-    { label: "5 to 6 sites", value: "5-6" },
-  ];
-
-  const other_symptons_options = [
-    { label: "Edema", value: "edema" },
-    { label: "HIV/AIDS", value: "HIV-AIDS" },
-    { label: "Jaundice", value: "jaundice" },
-    { label: "Vomiting", value: "Dyspnoea" },
-    { label: "Bacterial Infection", value: "bacterial-infection" },
-  ];
+  const handleValueChange = <T extends keyof KalacalFormData>(
+    field: T,
+    value: KalacalFormData[T]
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const AgeRangeForm = useMemo(
     () => (
-      <>
-        <View>
-          <View className="mb-8 w-full">
-            <Text className="text-justify text-sm text-gray-500">
-              Estimation of death probability for kala-azar patients accordingly
-              to data collected from patients treated in Teresina-PI, Brazil,
-              from 2005 to 2013
-            </Text>
-          </View>
-        </View>
-        <View className="w-full h-[1px] bg-gray-200 my-4" />
-        <ScrollView className="w-full mt-6">
-          <VStack space="md" className="w-full">
-            <FormControl isRequired>
-              <FormControlLabel className="mb-2">
-                <FormControlLabelText className="font-medium text-gray-700">
-                  Age Range
-                </FormControlLabelText>
-              </FormControlLabel>
-              <RadioGroup>
-                {age_range_options.map((option, index) => (
-                  <Radio
-                    key={index}
-                    value={option.value}
-                    onPress={() => {
-                      setFormData({ ...formData, age_range: option.value });
-                    }}
-                    size="md"
-                    isInvalid={false}
-                    isDisabled={false}
-                  >
-                    <RadioIndicator>
-                      <RadioIcon />
-                    </RadioIndicator>
-                    <RadioLabel>{option.label}</RadioLabel>
-                  </Radio>
-                ))}
-              </RadioGroup>
-            </FormControl>
-            <View className="w-full h-[1px] bg-gray-200 my-4" />
-            <FormControl isRequired>
-              <FormControlLabel className="mb-2">
-                <FormControlLabelText className="font-medium text-gray-700">
-                  Pick the model
-                </FormControlLabelText>
-              </FormControlLabel>
-              <VStack space="sm">
-                <Pressable
-                  onPress={() => {
-                    setSelectedModel("clinical");
-                    setFormData({ ...formData, clinical_model: "clinical" });
-                  }}
-                  className={`border rounded-lg p-5 flex-row items-center ${
-                    selectedModel === "clinical"
-                      ? "border-orange-600 bg-orange-500"
-                      : "border-gray-200 bg-white"
-                  }`}
-                >
-                  <View className="mr-3">
-                    <FontAwesomeIcon
-                      icon={faNotesMedical}
-                      color={selectedModel === "clinical" ? "white" : "#f97316"}
-                      size={20}
-                    />
-                  </View>
-                  <Text
-                    className={`font-semibold ${
-                      selectedModel === "clinical"
-                        ? "text-white"
-                        : "text-gray-700"
-                    }`}
-                  >
-                    Use clinical model
-                  </Text>
-                </Pressable>
-
-                <Pressable
-                  onPress={() => {
-                    setSelectedModel("lab");
-                    setFormData({ ...formData, clinical_model: "lab" });
-                  }}
-                  className={`border rounded-lg p-5 flex-row items-center ${
-                    selectedModel === "lab"
-                      ? "border-orange-600 bg-orange-500"
-                      : "border-gray-200 bg-white"
-                  }`}
-                >
-                  <View className="mr-3">
-                    <FontAwesomeIcon
-                      icon={faMicroscope}
-                      color={selectedModel === "lab" ? "white" : "#f97316"}
-                      size={20}
-                    />
-                  </View>
-                  <Text
-                    className={`font-semibold ${
-                      selectedModel === "lab" ? "text-white" : "text-gray-700"
-                    }`}
-                  >
-                    Use clinical and laboratorial model
-                  </Text>
-                </Pressable>
-              </VStack>
-            </FormControl>
-            <View className="bg-[#FBF5DA] text-[#824417] px-3 py-2 rounded-md flex flex-row gap-4 mt-3">
-              <View className="">
-                <FontAwesomeIcon
-                  icon={faTriangleExclamation}
-                  color="#824417"
-                  size={18}
-                />
-              </View>
-              <Text className="text-[#824417] text-sm flex-1 leading-4">
-                Warning: These estimations of death probability should NOT be
-                taken as the chance of death of any specific patient, but as an
-                indicator of the disease severity in other similar patient
-                populations at a different place or time.
-              </Text>
-            </View>
-          </VStack>
-        </ScrollView>
-      </>
-    ),
-    [formData]
-  );
-
-  const SymptomsForm = useMemo(
-    () => (
-      <ScrollView className="w-full mt-6">
+      <ScrollView className="w-full mt-4" showsVerticalScrollIndicator={false}>
         <VStack space="md" className="w-full">
-          <FormControl>
+          <FormControl isRequired isInvalid={!!errors?.caso_id}>
             <FormControlLabel>
-              <FormControlLabelText>
-                Number of bleeding sites
-              </FormControlLabelText>
+              <FormControlLabelText>ID do Paciente</FormControlLabelText>
             </FormControlLabel>
-            <RadioGroup>
-              {bleeding_sites_options.map((option, index) => (
-                <Radio
-                  key={index}
-                  value={option.value}
-                  onPress={() => {
-                    setFormData({ ...formData, bleeding_sites: option.value });
-                  }}
-                  size="md"
-                  isInvalid={false}
-                  isDisabled={false}
-                >
+            <TextInput
+              className={`bg-gray-100 rounded-lg px-4 py-3 text-base text-gray-800 ${
+                errors?.caso_id ? "border border-red-500" : ""
+              }`}
+              value={formData.caso_id}
+              onChangeText={(text) => handleValueChange("caso_id", text)}
+              placeholder="Digite o identificador do caso"
+              placeholderTextColor="#9CA3AF"
+            />
+            {errors?.caso_id && (
+              <Text className="text-red-500 text-sm mt-1">
+                {errors.caso_id[0]}
+              </Text>
+            )}
+          </FormControl>
+
+          <FormControl
+            isRequired
+            isInvalid={!!errors?.faixa_etaria_kalacal}
+            className="mt-4"
+          >
+            <FormControlLabel>
+              <FormControlLabelText>Faixa Etária</FormControlLabelText>
+            </FormControlLabel>
+            <RadioGroup
+              value={String(formData.faixa_etaria_kalacal)}
+              className="gap-2"
+              onChange={(selectedValue: string) => {
+                const numericValue = parseInt(selectedValue, 10);
+                handleValueChange("faixa_etaria_kalacal", numericValue);
+              }}
+            >
+              {options?.faixas_etarias.map((option) => (
+                <Radio key={option.value} value={String(option.value)}>
                   <RadioIndicator>
                     <RadioIcon />
                   </RadioIndicator>
@@ -225,34 +99,140 @@ export default function PaginatedForm({
               ))}
             </RadioGroup>
           </FormControl>
+
           <View className="w-full h-[1px] bg-gray-200 my-4" />
+
+          <FormControl isRequired isInvalid={!!errors?.modelo}>
+            <FormControlLabel>
+              <FormControlLabelText>Escolha o Modelo</FormControlLabelText>
+            </FormControlLabel>
+            <VStack space="sm">
+              <Pressable
+                onPress={() => handleValueChange("modelo", "clinico")}
+                className={`border rounded-lg p-5 flex-row items-center ${
+                  formData.modelo === "clinico"
+                    ? "border-orange-600 bg-orange-500"
+                    : "border-gray-200 bg-white"
+                }`}
+              >
+                <FontAwesomeIcon
+                  icon={faNotesMedical}
+                  color={formData.modelo === "clinico" ? "white" : "#f97316"}
+                  size={20}
+                />
+                <Text
+                  className={`ml-3 font-semibold ${
+                    formData.modelo === "clinico"
+                      ? "text-white"
+                      : "text-gray-700"
+                  }`}
+                >
+                  Usar modelo clínico
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() =>
+                  handleValueChange("modelo", "clinico_laboratorial")
+                }
+                className={`border rounded-lg p-5 flex-row items-center ${
+                  formData.modelo === "clinico_laboratorial"
+                    ? "border-orange-600 bg-orange-500"
+                    : "border-gray-200 bg-white"
+                }`}
+              >
+                <FontAwesomeIcon
+                  icon={faMicroscope}
+                  color={
+                    formData.modelo === "clinico_laboratorial"
+                      ? "white"
+                      : "#f97316"
+                  }
+                  size={20}
+                />
+                <Text
+                  className={`ml-3 font-semibold ${
+                    formData.modelo === "clinico_laboratorial"
+                      ? "text-white"
+                      : "text-gray-700"
+                  }`}
+                >
+                  Usar modelo clínico e laboratorial
+                </Text>
+              </Pressable>
+            </VStack>
+          </FormControl>
+          <View className="bg-[#FBF5DA] text-[#824417] px-3 py-2 rounded-md flex flex-row gap-4 mt-3">
+            <View className="">
+              <FontAwesomeIcon
+                icon={faTriangleExclamation}
+                color="#824417"
+                size={18}
+              />
+            </View>
+            <Text className="text-[#824417] text-sm flex-1 leading-4">
+              Warning: These estimations of death probability should NOT be
+              taken as the chance of death of any specific patient, but as an
+              indicator of the disease severity in other similar patient
+              populations at a different place or time.
+            </Text>
+          </View>
+        </VStack>
+      </ScrollView>
+    ),
+    [formData, errors, options]
+  );
+
+  const SymptomsForm = useMemo(
+    () => (
+      <ScrollView className="w-full mt-6">
+        <VStack space="md" className="w-full">
+          <FormControl isRequired isInvalid={!!errors?.sitios_sangramento}>
+            <FormControlLabel>
+              <FormControlLabelText>
+                Número de locais de sangramento
+              </FormControlLabelText>
+            </FormControlLabel>
+            <RadioGroup
+              value={String(formData.sitios_sangramento)}
+              className="gap-2"
+              onChange={(selectedValue: string) => {
+                const numericValue = parseInt(selectedValue, 10);
+                handleValueChange("sitios_sangramento", numericValue);
+              }}
+            >
+              {options?.sitios_sangramento.map((option) => (
+                <Radio key={option.value} value={String(option.value)}>
+                  <RadioIndicator>
+                    <RadioIcon />
+                  </RadioIndicator>
+                  <RadioLabel>{option.label}</RadioLabel>
+                </Radio>
+              ))}
+            </RadioGroup>
+          </FormControl>
+
+          <View className="w-full h-[1px] bg-gray-200 my-4" />
+
           <FormControl>
             <FormControlLabel>
               <FormControlLabelText>
-                Other signs and symptoms
+                Outros sinais e sintomas
               </FormControlLabelText>
             </FormControlLabel>
             <VStack space="sm">
-              {other_symptons_options.map((option, index) => (
+              {options?.sinais_clinicos.map((option) => (
                 <Checkbox
-                  key={index}
-                  value={option.value}
-                  isChecked={selectedSymptoms.includes(option.value)}
-                  onChange={(isChecked) => {
-                    let newSymptoms: string[];
-                    if (isChecked) {
-                      newSymptoms = [...selectedSymptoms, option.value];
-                    } else {
-                      newSymptoms = selectedSymptoms.filter(
-                        (symptom) => symptom !== option.value
-                      );
-                    }
-                    setSelectedSymptoms(newSymptoms);
-                    setFormData({ ...formData, other_symptons: newSymptoms });
-                  }}
-                  size="md"
-                  isInvalid={false}
-                  isDisabled={false}
+                  key={option.key}
+                  value={option.key}
+                  isChecked={
+                    formData[option.key as keyof KalacalFormData] as boolean
+                  }
+                  onChange={(isChecked: boolean) =>
+                    handleValueChange(
+                      option.key as keyof KalacalFormData,
+                      isChecked
+                    )
+                  }
                 >
                   <CheckboxIndicator>
                     <CheckboxIcon />
@@ -265,68 +245,85 @@ export default function PaginatedForm({
         </VStack>
       </ScrollView>
     ),
-    [formData]
+    [formData, errors, options]
   );
 
-  const ResultsForm = useMemo(
-    () => (
+  const ResultsForm = useMemo(() => {
+    const selectedAgeRange = options?.faixas_etarias.find(
+      (opt) => opt.value === formData.faixa_etaria_kalacal
+    )?.label;
+
+    return (
       <ScrollView className="w-full mt-6" showsVerticalScrollIndicator={false}>
         <VStack space="lg" className="w-full pb-8">
           <View className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
             <Text className="text-lg font-semibold text-gray-800 mb-4">
-              Animal Report
+              Relatório do Paciente
             </Text>
 
             <View className="flex-row justify-between items-center py-2">
-              <Text className="text-gray-600 font-medium">Age Range</Text>
+              <Text className="text-gray-600 font-medium">ID do Caso</Text>
               <Text className="text-gray-800 font-medium">
-                {formData.age_range === "0-1"
-                  ? "< 12 months old"
-                  : formData.age_range === "2-4"
-                  ? "12 - 23 months"
-                  : formData.age_range === "2-15"
-                  ? "2 - 15 years"
-                  : formData.age_range === "19-39"
-                  ? "16-39 years"
-                  : formData.age_range === "40"
-                  ? "> 40 years"
-                  : "Not specified"}
+                {apiResult?.caso_id || "Não especificado"}
               </Text>
             </View>
-            <View className="w-full h-[1px] bg-gray-200 my-4" />
+
+            <View className="w-full h-[1px] bg-gray-200 my-2" />
 
             <View className="flex-row justify-between items-center py-2">
-              <Text className="text-gray-600 font-medium">Model</Text>
+              <Text className="text-gray-600 font-medium">Faixa Etária</Text>
               <Text className="text-gray-800 font-medium">
-                {formData.clinical_model === "clinical"
-                  ? "Clinical"
-                  : "Clinical and Laboratorial"}
+                {selectedAgeRange || "Não especificado"}
+              </Text>
+            </View>
+
+            <View className="w-full h-[1px] bg-gray-200 my-2" />
+
+            <View className="flex-row justify-between items-center py-2">
+              <Text className="text-gray-600 font-medium">Modelo</Text>
+              <Text className="text-gray-800 font-medium capitalize">
+                {apiResult?.modelo_usado || "Não especificado"}
               </Text>
             </View>
 
             <Text className="text-lg font-semibold text-gray-800 mt-4 mb-2">
-              Results
+              Resultados
             </Text>
 
             <View className="flex-row justify-between items-center py-2">
-              <Text className="text-gray-600 font-medium ">Score</Text>
-              <Text className="text-orange-500 font-bold text-lg">6/13</Text>
+              <Text className="text-gray-600 font-medium">Interpretação</Text>
+              <Text className="text-orange-500 font-bold text-lg">
+                {apiResult?.interpretacao || "N/A"}
+              </Text>
+            </View>
+            <View className="flex-row justify-between items-center py-2">
+              <Text className="text-gray-600 font-medium">Score</Text>
+              <Text className="text-orange-500 font-bold text-lg">
+                {apiResult?.escore || "N/A"}
+              </Text>
+            </View>
+            <View className="flex-row justify-between items-center py-2">
+              <Text className="text-gray-600 font-medium">Score máximo</Text>
+              <Text className="text-orange-500 font-bold text-lg">
+                {apiResult?.escore_maximo || "N/A"}
+              </Text>
             </View>
 
-            <View className="w-full h-[1px] bg-gray-200 my-4" />
+            <View className="w-full h-[1px] bg-gray-200 my-2" />
 
             <View className="flex-row justify-between items-center py-2">
               <Text className="text-gray-600 font-medium">
-                Probability of death
+                Probabilidade de óbito
               </Text>
-              <Text className="text-orange-500 font-bold text-xl">28.8%</Text>
+              <Text className="text-orange-500 font-bold text-xl">
+                {apiResult?.probabilidade_morte + " %" || "N/A"}
+              </Text>
             </View>
           </View>
         </VStack>
       </ScrollView>
-    ),
-    [formData]
-  );
+    );
+  }, [formData, apiResult, options]);
 
   switch (currentStep) {
     case 0:
