@@ -3,9 +3,11 @@
   "compilerOptions": {
     "strict": true,
     "allowImportingTsExtensions": true,
+    "jsx": "react-native",
     "noEmit": true,
     "paths": {
       "@/*": ["./*"],
+      "lib/*": ["./lib/*"],
       "tailwind.config": ["./tailwind.config.js"]
     }
   },
