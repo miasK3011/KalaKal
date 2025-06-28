@@ -2,6 +2,9 @@
   "folders": [
     {
       "path": ".."
+    },
+    {
+      "path": "../../Kala-Cal-API"
     }
   ],
   "settings": {
@@ -20,6 +23,6 @@
       "VisualStudioExptTeam.vscodeintellicode",
       "dbaeumer.vscode-eslint",
       "csstools.postcss"
-    ],
-  },
+    ]
+  }
 }
