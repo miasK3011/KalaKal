@@ -1,6 +1,7 @@
 import { ocorrenciaSchema } from "@/components/ocorrencias/schemas/ocorrencia-schema";
 import { OcorrenciaForm, SexoOption } from "@/components/ocorrencias/types";
-import api from "@/services/api";
+import KalaCalAPI from "@/services/KalaCalAPI";
+import api from "@/services/KalaCalAPI";
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons/faCalendarDays";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -75,9 +76,13 @@ export default function EditarOcorrenciaScreen(): JSX.Element {
     async function fetchOcorrencia() {
       try {
         setIsFetching(true);
-        const response = await api.get(`/casos/${id}/`);
+        const response = await KalaCalAPI.getCaso(Number(id));
         const dadosApi = response.data;
-
+        if (!dadosApi) {
+          Alert.alert("Erro", "Dados da ocorrência não encontrados.");
+          router.back();
+          return;
+        }
         setFormData({
           ...dadosApi,
           data_nascimento: fromApiDateFormat(dadosApi.data_nascimento),
@@ -135,9 +140,7 @@ export default function EditarOcorrenciaScreen(): JSX.Element {
     });
 
     try {
-      const response = await api.patch(`/casos/${id}/`, dataAsFormData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await KalaCalAPI.updateCaso(Number(id), dataAsFormData)
 
       if (response.status === 200) {
         Alert.alert("Sucesso!", "Ocorrência atualizada com sucesso.");

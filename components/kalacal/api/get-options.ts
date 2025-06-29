@@ -1,13 +1,16 @@
-import api from "@/services/api";
+import KalaCalAPI from "@/services/KalaCalAPI";
 import { KalacalOptions } from "../types";
 
-export default async function getKalacalOptions(
-): Promise<KalacalOptions | null> {
+export default async function getKalacalOptions(): Promise<KalacalOptions | null> {
     try {
-        const response = await api.get("/kalacal/opcoes/");
-        return response.data as KalacalOptions;
+        const response = await KalaCalAPI.getOpcoesFormulario();
+
+        if (response.success && response.data) {
+            return response.data;
+        }
+        return null;
     } catch (error) {
-        console.error("Erro ao buscar ocorrências:", error);
+        console.error("Erro ao buscar opções do Kalacal:", error);
         return null;
     }
 }

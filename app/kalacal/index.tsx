@@ -12,7 +12,7 @@ import {
   KalacalResponse,
 } from "@/components/kalacal/types";
 import { Button, ButtonText } from "@/components/ui/button";
-import api from "@/services/api";
+import KalaCalAPI from "@/services/KalaCalAPI";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -133,20 +133,18 @@ export default function KalaCal() {
     });
 
     try {
-      const response = await api.post("/kalacal/calcular/", dataAsFormData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      setIsSubmitting(true);
 
-      setApiResult(response.data as KalacalResponse);
+      const response = await KalaCalAPI.calcularProbabilidade(formData);
 
-      if (currentStep < stepperItems.length - 1) {
-        setCurrentStep(currentStep + 1);
+      if (response.success && response.data) {
+        setApiResult(response.data);
+      } else {
+        setErrors({ form: response.error || "Erro ao processar o cálculo" });
       }
     } catch (error) {
       console.error("Erro ao enviar formulário:", error);
-      Alert.alert("Erro", "Não foi possível processar a solicitação.");
+      setErrors({ form: "Erro inesperado ao processar o cálculo" });
     } finally {
       setIsSubmitting(false);
     }

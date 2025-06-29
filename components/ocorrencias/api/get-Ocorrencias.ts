@@ -1,4 +1,4 @@
-import api from "@/services/api";
+import api from "@/services/KalaCalAPI";
 import { Ocorrencia } from "../types";
 
 export default async function getOcorrencias(

@@ -3,7 +3,7 @@ import { Ocorrencia } from "@/components/ocorrencias/types";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import dayjs from "@/lib/dayjs";
-import api from "@/services/api";
+import api from "@/services/KalaCalAPI";
 import { faPen } from "@fortawesome/free-solid-svg-icons/faPen";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons/faUserPlus";
