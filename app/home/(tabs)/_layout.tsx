@@ -25,29 +25,11 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="notificacoes/index"
-          options={{
-            title: "Notificações",
-            tabBarIcon: ({ color }) => (
-              <FontAwesome name="bell" size={25} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
           name="conta/index"
           options={{
             title: "Conta",
             tabBarIcon: ({ color }) => (
               <FontAwesome name="user" size={25} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="sobre/index"
-          options={{
-            title: "Sobre",
-            tabBarIcon: ({ color }) => (
-              <FontAwesome name="info-circle" size={25} color={color} />
             ),
           }}
         />

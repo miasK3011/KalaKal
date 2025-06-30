@@ -22,7 +22,7 @@ const menu: Menu[][] = [
       icone: "file-tree",
       titulo: "Linha de Cuidado ao Paciente",
       cor: "cornflowerblue",
-      screen: "/leishmaniose",
+      screen: "/linhaPromocao",
     },
   ],
   [

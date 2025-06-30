@@ -24,10 +24,6 @@ export default function EntrarScreen() {
   const { login } = useAuth();
 
   const SignIn = async () => {
-    console.log("Tentando fazer login com:", {
-      username: username.trim(),
-      password: senha.trim(),
-    });
     if (!username.trim() || !senha.trim()) {
       Alert.alert("Ocorreu um erro", "Por favor, preencha todos os campos");
       return;
@@ -37,10 +33,9 @@ export default function EntrarScreen() {
 
     try {
       const result = await login({
-        username: username,
-        password: senha,
+        username: username.trim(),
+        password: senha.trim(),
       });
-
       if (result.success) {
         router.replace("/home/(tabs)/menu");
       } else {
@@ -85,7 +80,7 @@ export default function EntrarScreen() {
               <View style={estilo.inputContainer}>
                 <TextInput
                   style={estilo.textInput}
-                  placeholder={"E-mail"}
+                  placeholder={"Usuário"}
                   onChangeText={setUsername}
                   placeholderTextColor="rgba(255,255,255,0.5)"
                   autoCapitalize="none"

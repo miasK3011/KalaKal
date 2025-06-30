@@ -94,7 +94,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (credentials: LoginCredentials): Promise<AuthResult> => {
     try {
       setLoading(true);
-
       const result = await KalaCalAPI.login(credentials);
 
       if (result.success && result.data) {

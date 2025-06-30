@@ -1,5 +1,6 @@
 import { KalacalFormData, KalacalOptions, KalacalResponse } from '@/components/kalacal/types';
 import { Ocorrencia, OcorrenciaForm } from '@/components/ocorrencias/types';
+import env from '@/config/env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { ApiInfo, ApiResponse, AuthResponse, LoginCredentials, MetricasSistema, RefreshTokenResponse, RegisterData, User } from './types';
@@ -11,8 +12,8 @@ interface ApiConfig {
 }
 
 const API_CONFIG: ApiConfig = {
-    baseURL: process.env.EXPO_PUBLIC_API_BASE_URL,
-    apiKey: process.env.EXPO_PUBLIC_API_KEY,
+    baseURL: env.EXPO_PUBLIC_API_URL,
+    apiKey: env.EXPO_PUBLIC_API_KEY,
     timeout: 10000
 };
 
@@ -25,7 +26,6 @@ const apiClient = axios.create({
     }
 });
 
-// Interceptador para adicionar token JWT automaticamente
 apiClient.interceptors.request.use(
     async (config) => {
         const token = await AsyncStorage.getItem('accessToken');
@@ -39,7 +39,6 @@ apiClient.interceptors.request.use(
     }
 );
 
-// Interceptador para lidar com refresh token
 apiClient.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error: AxiosError) => {
@@ -54,14 +53,11 @@ apiClient.interceptors.response.use(
                     const response = await KalaCalAPI.refreshToken(refreshToken);
                     await AsyncStorage.setItem('accessToken', response.data.access);
 
-                    // Repetir requisição original com novo token
                     originalRequest.headers.Authorization = `Bearer ${response.data.access}`;
                     return apiClient(originalRequest);
                 }
             } catch (refreshError) {
-                // Token refresh falhou, fazer logout
                 await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'user']);
-                // Aqui você pode disparar uma ação para redirecionar para login
             }
         }
 
@@ -71,10 +67,7 @@ apiClient.interceptors.response.use(
 
 class KalaCalAPI {
     static handleError(error: AxiosError): ApiResponse {
-        console.error('API Error:', error);
-
         if (error.response) {
-            // Erro da API (4xx, 5xx)
             const responseData = error.response.data as any;
             return {
                 success: false,
@@ -83,14 +76,12 @@ class KalaCalAPI {
                 data: responseData
             };
         } else if (error.request) {
-            // Erro de rede
             return {
                 success: false,
                 error: 'Erro de conexão. Verifique sua internet.',
                 status: null
             };
         } else {
-            // Outro erro
             return {
                 success: false,
                 error: error.message || 'Erro desconhecido',
@@ -105,10 +96,22 @@ class KalaCalAPI {
             return {
                 success: true,
                 data: response.data,
-                status: response.status
+                status: response.status,
             };
         } catch (error) {
-            return this.handleError(error as AxiosError);
+            if (axios.isAxiosError(error)) {
+                return {
+                    success: false,
+                    error: error.response?.data?.detail || error.message || "Erro desconhecido",
+                    status: error.response?.status,
+                    data: error.response?.data
+                };
+            }
+
+            return {
+                success: false,
+                error: String(error) || "Erro desconhecido",
+            };
         }
     }
 
@@ -130,7 +133,6 @@ class KalaCalAPI {
         );
 
         if (result.success && result.data?.access) {
-            // Salvar tokens e dados do usuário
             await AsyncStorage.multiSet([
                 ['accessToken', result.data.access],
                 ['refreshToken', result.data.refresh],
@@ -152,7 +154,7 @@ class KalaCalAPI {
             await AsyncStorage.multiSet([
                 ['accessToken', result.data.access],
                 ['refreshToken', result.data.refresh],
-                ['user', JSON.stringify(result.data.user)]
+                // ['user', JSON.stringify(result.data.user)]
             ]);
         }
 
@@ -164,7 +166,6 @@ class KalaCalAPI {
             const refreshToken = await AsyncStorage.getItem('refreshToken');
 
             if (refreshToken) {
-                // Tentar fazer logout no servidor
                 await this.makeRequest(() =>
                     apiClient.post('/api/auth/logout/', { refresh: refreshToken })
                 );
@@ -172,7 +173,6 @@ class KalaCalAPI {
         } catch (error) {
             console.error('Erro no logout do servidor:', error);
         } finally {
-            // Sempre limpar dados locais
             await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'user']);
         }
 
