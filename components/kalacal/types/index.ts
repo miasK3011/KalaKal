@@ -7,7 +7,7 @@ export interface KalacalOptions {
 }
 
 export interface KalacalResponse {
-    caso_id: number
+    caso_id: string | string[]
     escore: number
     escore_maximo: number
     probabilidade_morte: number

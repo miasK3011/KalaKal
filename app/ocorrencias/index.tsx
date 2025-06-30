@@ -3,7 +3,7 @@ import { Ocorrencia } from "@/components/ocorrencias/types";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import dayjs from "@/lib/dayjs";
-import api from "@/services/api";
+import KalaCalAPI from "@/services/KalaCalAPI";
 import { faPen } from "@fortawesome/free-solid-svg-icons/faPen";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons/faUserPlus";
@@ -49,7 +49,7 @@ export default function OcorrenciasScreen() {
 
   const handleDelete = async (id: string | number) => {
     try {
-      const response = await api.delete(`/casos/${id}/`);
+      const response = await KalaCalAPI.deleteCaso(Number(id));
       if (response.status === 204) {
         ToastAndroid.show(
           `Caso ${id} deletado com sucesso!`,

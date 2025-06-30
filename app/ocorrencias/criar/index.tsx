@@ -1,6 +1,6 @@
 import { ocorrenciaSchema } from "@/components/ocorrencias/schemas/ocorrencia-schema";
 import { OcorrenciaForm, SexoOption } from "@/components/ocorrencias/types";
-import api from "@/services/api";
+import KalaCalAPI from "@/services/KalaCalAPI";
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons/faCalendarDays";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -115,9 +115,7 @@ export default function CriarOcorrenciaScreen(): JSX.Element {
     });
 
     try {
-      const response = await api.post("/casos/", dataAsFormData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await KalaCalAPI.createCaso(dataAsFormData);
       if (response.status === 201) {
         Alert.alert("Sucesso!", "Ocorrência criada com sucesso.");
         router.back();
